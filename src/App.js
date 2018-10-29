@@ -9,7 +9,7 @@ import 'antd/dist/antd.css';
 class Counter extends Component {
   constructor(props){
     super(props)
-    this.store = props.store.appStore
+    this.store = props.store.store
   }
 
   render() {

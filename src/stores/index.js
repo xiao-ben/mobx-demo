@@ -1,4 +1,4 @@
-import {appStore} from './appStore'
+import {store} from './store'
 import {navStore} from './navStore'
 
-export {appStore, navStore}
+export {store, navStore}

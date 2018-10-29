@@ -1,7 +1,7 @@
 import { observable, action } from 'mobx';
 
 
-class AppStore {
+class appStore {
 
     @observable todos = [{
       count: 1
@@ -16,6 +16,6 @@ class AppStore {
 
     @action.bound fn = index => {this.todos[index].count = this.todos[index].count + 1} 
   }
-const appStore = new AppStore();
+const store = new appStore();
 
-export {appStore}
+export {store}
