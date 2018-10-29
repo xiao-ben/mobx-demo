@@ -1,0 +1,20 @@
+.loginContent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginModal .ant-tabs-bar{
+    border-bottom: none;
+    display: flex;
+    justify-content: center;
+}
+
+.login-form-button {
+    display: block;
+    width: 350px;
+}
+
+.password {
+    margin-bottom: 0;
+}
