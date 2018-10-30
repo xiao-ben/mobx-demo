@@ -8,7 +8,7 @@ const Routers = () => {
     return (
         <Switch>
             <Route exact path="/login" component={Login} />
-            <Route exact path="/123" component={Counter} />
+            <Route exact path="/home" component={Counter} />
             <Route render={() => <h1>找不到此页面</h1>} />
         </Switch>
     )

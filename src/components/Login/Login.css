@@ -1,10 +1,16 @@
 .loginContent {
+    width: 350px;
+    position: absolute;
+    top: calc(50% - 100px);
+    left: calc( 50% - 175px);
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: rgba(256, 256, 256, 0.8)
 }
 
 .loginModal .ant-tabs-bar{
+    width: 350px;
     border-bottom: none;
     display: flex;
     justify-content: center;
@@ -12,7 +18,7 @@
 
 .login-form-button {
     display: block;
-    width: 350px;
+    width: 100%;
 }
 
 .password {
