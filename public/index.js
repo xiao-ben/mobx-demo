@@ -54,17 +54,6 @@ class currentCircle extends Circle {
 }
 
 
-
-window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
-let canvas = document.querySelector("#canvas");
-let ctx = canvas.getContext("2d");
-let w = canvas.width = canvas.offsetWidth;
-let h = canvas.height = canvas.offsetHeight;
-let circles = [];
-let current_circle = new currentCircle(0, 0);
-
-
-
 let draw = function () {
   ctx.clearRect(0, 0, w, h);
   for (let i = 0; i < circles.length; i++) {
@@ -90,7 +79,24 @@ let init = function (num) {
   draw();
 }
 
-window.addEventListener('load', init(80));
+let canvas 
+let ctx
+let w
+let h
+let circles
+let current_circle
+
+window.addEventListener('load', setTimeout(() => {
+  window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+   canvas = document.querySelector("#canvas");
+   ctx = canvas.getContext("2d");
+   w = canvas.width = canvas.offsetWidth;
+   h = canvas.height = canvas.offsetHeight;
+   circles = [];
+   current_circle = new currentCircle(0, 0);
+  init(80)
+  console.log(233)
+}), 8000);
 window.onmousemove = function (e) {
   e = e || window.event;
   current_circle.x = e.clientX;

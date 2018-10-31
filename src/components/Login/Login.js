@@ -8,10 +8,13 @@ const FormItem = Form.Item;
 
 @inject('store') @observer
 class Login extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         console.log(props, 'props')
         this.store = props.store.loginStore
+    }
+
+    componentDidMount() {
     }
 
     handleSubmit = (e) => {
@@ -21,10 +24,10 @@ class Login extends Component {
                 this.store.handleLogin(values).then(
                     res => {
                         if (res.data.code === 200) {
-                            // window.location.href = '/home'
+                            window.location.href = '/home'
                         }
                     }
-                ) 
+                )
             }
         });
     }
@@ -69,16 +72,19 @@ class Login extends Component {
     }
     render() {
         return (
-            <div className="loginContent">
-                <div className="loginModal">
-                    <Tabs defaultActiveKey="1" onChange={this.handleTabChaneg}>
-                        <TabPane tab="普通用户" key="1">
-                            {this.renderLoginForm()}
-                        </TabPane>
-                        <TabPane tab="管理员" key="2">
-                            {this.renderLoginForm()}
-                        </TabPane>
-                    </Tabs>
+            <div>
+                <canvas id="canvas"></canvas>
+                <div className="loginContent">
+                    <div className="loginModal">
+                        <Tabs defaultActiveKey="1" onChange={this.handleTabChaneg}>
+                            <TabPane tab="普通用户" key="1">
+                                {this.renderLoginForm()}
+                            </TabPane>
+                            <TabPane tab="管理员" key="2">
+                                {this.renderLoginForm()}
+                            </TabPane>
+                        </Tabs>
+                    </div>
                 </div>
             </div>
         )
