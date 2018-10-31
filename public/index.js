@@ -1,158 +1,101 @@
-(function () {
-    var canvasEl = document.getElementById('canvas');
-    var ctx = canvasEl.getContext('2d');
-    var mousePos = [0, 0];
-  
-    var easingFactor = 5.0;
-    var backgroundColor = 'rgba(256, 256, 256, 0.5)';
-    var nodeColor = '#999';
-    var edgeColor = '#999';
-  
-    var nodes = [];
-    var edges = [];
-  
-    function constructNodes() {
-      for (var i = 0; i < 100; i++) {
-        var node = {
-          drivenByMouse: i == 0,
-          x: Math.random() * canvasEl.width,
-          y: Math.random() * canvasEl.height,
-          vx: Math.random() * 1 - 0.5,
-          vy: Math.random() * 1 - 0.5,
-          radius: Math.random() > 0.9 ? 2 + Math.random() * 2 : 1 + Math.random() * 2
-        };
-  
-        nodes.push(node);
-      }
-  
-      nodes.forEach(function (e) {
-        nodes.forEach(function (e2) {
-          if (e == e2) {
-            return;
-          }
-  
-          var edge = {
-            from: e,
-            to: e2
-          }
-  
-          addEdge(edge);
-        });
-      });
+class Circle {
+
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.r = Math.random() * 14 + 1;
+    this._mx = Math.random() * 2 - 1;
+    this._my = Math.random() * 2 - 1;
+  }
+
+  drawCircle(ctx) {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, 360);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(204, 204, 204, 0.2)';
+    ctx.fill();
+  }
+
+  drawLine(ctx, _circle) {
+    let dx = this.x - _circle.x;
+    let dy = this.y - _circle.y;
+    let d = Math.sqrt(dx * dx + dy * dy);
+    if (d < 150) {
+      ctx.beginPath();
+      ctx.moveTo(this.x, this.y);//起始点
+      ctx.lineTo(_circle.x, _circle.y);//终点
+      ctx.closePath();
+      ctx.strokeStyle = 'rgba(204, 204, 204, 0.1)';
+      ctx.stroke();
     }
-  
-    function addEdge(edge) {
-      var ignore = false;
-  
-      edges.forEach(function (e) {
-        if (e.from == edge.from && e.to == edge.to) {
-          ignore = true;
-        }
-  
-        if (e.to == edge.from && e.from == edge.to) {
-          ignore = true;
-        }
-      });
-  
-      if (!ignore) {
-        edges.push(edge);
-      }
+  }
+
+  move(w, h) {
+    this._mx = (this.x < w && this.x > 0) ? this._mx : (- this._mx);
+    this._my = (this.y < h && this.y > 0) ? this._my : (- this._my);
+    this.x += this._mx / 2;
+    this.y += this._my / 2;
+  }
+}
+
+
+class currentCircle extends Circle {
+  constructor(x, y) {
+    super(x, y);
+  }
+  drawCircle(ctx) {
+    ctx.beginPath();
+    this.r = (this.r < 14 && this.r > 1) ? this.r + (Math.random() * 2 - 1) : 2;
+    ctx.arc(this.x, this.y, this.r, 0, 360);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(45, 120, 244, ' + (parseInt(Math.random() * 100) / 100) + ')';
+    ctx.fill();
+  }
+}
+
+
+
+window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
+let canvas = document.querySelector("#canvas");
+let ctx = canvas.getContext("2d");
+let w = canvas.width = canvas.offsetWidth;
+let h = canvas.height = canvas.offsetHeight;
+let circles = [];
+let current_circle = new currentCircle(0, 0);
+
+
+
+let draw = function () {
+  ctx.clearRect(0, 0, w, h);
+  for (let i = 0; i < circles.length; i++) {
+    circles[i].move(w, h);
+    circles[i].drawCircle(ctx);
+    for (j = i + 1; j < circles.length; j++) {
+      circles[i].drawLine(ctx, circles[j])
     }
-  
-    function step() {
-      nodes.forEach(function (e) {
-        if (e.drivenByMouse) {
-          return;
-        }
-  
-        e.x += e.vx;
-        e.y += e.vy;
-  
-        function clamp(min, max, value) {
-          if (value > max) {
-            return max;
-          } else if (value < min) {
-            return min;
-          } else {
-            return value;
-          }
-        }
-  
-        if (e.x <= 0 || e.x >= canvasEl.width) {
-          e.vx *= -1;
-          e.x = clamp(0, canvasEl.width, e.x)
-        }
-  
-        if (e.y <= 0 || e.y >= canvasEl.height) {
-          e.vy *= -1;
-          e.y = clamp(0, canvasEl.height, e.y)
-        }
-      });
-  
-      adjustNodeDrivenByMouse();
-      render();
-      window.requestAnimationFrame(step);
+  }
+  if (current_circle.x) {
+    current_circle.drawCircle(ctx);
+    for (var k = 1; k < circles.length; k++) {
+      current_circle.drawLine(ctx, circles[k]);
     }
-  
-    function adjustNodeDrivenByMouse() {
-      nodes[0].x += (mousePos[0] - nodes[0].x) / easingFactor;
-      nodes[0].y += (mousePos[1] - nodes[0].y) / easingFactor;
-    }
-  
-    function lengthOfEdge(edge) {
-      return Math.sqrt(Math.pow((edge.from.x - edge.to.x), 2) + Math.pow((edge.from.y - edge.to.y), 2));
-    }
-  
-    function render() {
-      ctx.fillStyle = backgroundColor;
-      ctx.fillRect(0, 0, canvasEl.width, canvasEl.height);
-  
-      edges.forEach(function (e) {
-        var l = lengthOfEdge(e);
-        var threshold = canvasEl.width / 8;
-  
-        if (l > threshold) {
-          return;
-        }
-  
-        ctx.strokeStyle = edgeColor;
-        ctx.lineWidth = (1.0 - l / threshold) * 2.5;
-        ctx.globalAlpha = 1.0 - l / threshold;
-        ctx.beginPath();
-        ctx.moveTo(e.from.x, e.from.y);
-        ctx.lineTo(e.to.x, e.to.y);
-        ctx.stroke();
-      });
-      ctx.globalAlpha = 1.0;
-  
-      nodes.forEach(function (e) {
-        if (e.drivenByMouse) {
-          return;
-        }
-  
-        ctx.fillStyle = nodeColor;
-        ctx.beginPath();
-        ctx.arc(e.x, e.y, e.radius, 0, 2 * Math.PI);
-        ctx.fill();
-      });
-    }
-  
-    window.onresize = function () {
-      canvasEl.width = document.body.clientWidth;
-      canvasEl.height = canvasEl.clientHeight;
-  
-      if (nodes.length == 0) {
-        constructNodes();
-      }
-  
-      render();
-    };
-  
-    window.onmousemove = function (e) {
-      mousePos[0] = e.clientX;
-      mousePos[1] = e.clientY;
-    }
-  
-    window.onresize(); // trigger the event manually.
-    window.requestAnimationFrame(step);
-  }).call(this);
+  }
+  requestAnimationFrame(draw);
+}
+
+let init = function (num) {
+  for (var i = 0; i < num; i++) {
+    circles.push(new Circle(Math.random() * w, Math.random() * h));
+  }
+  draw();
+}
+
+window.addEventListener('load', init(80));
+window.onmousemove = function (e) {
+  e = e || window.event;
+  current_circle.x = e.clientX;
+  current_circle.y = e.clientY;
+}, window.onmouseout = function () {
+  current_circle.x = null;
+  current_circle.y = null;
+}
