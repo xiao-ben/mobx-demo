@@ -1,3 +1,7 @@
+.navWrap {
+    height: 50px;
+}
+
 .topNavBar {
     position: fixed;
     height: 50px;

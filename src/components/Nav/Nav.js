@@ -10,9 +10,10 @@ class Nav extends Component {
     }
 
     render() {
-    console.log(this.props)
         return (
-            <div className="topNavBar">{this.store.navList[1]}</div>
+            <div className="navWrap">
+                <div className="topNavBar">{this.store.navList[1]}</div>
+            </div>
         )
     }
 }

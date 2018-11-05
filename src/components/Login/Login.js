@@ -14,9 +14,6 @@ class Login extends Component {
         this.store = props.store.loginStore
     }
 
-    componentDidMount() {
-    }
-
     handleSubmit = (e) => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {

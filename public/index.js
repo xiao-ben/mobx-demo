@@ -86,7 +86,7 @@ let h
 let circles
 let current_circle
 
-window.addEventListener('load', setTimeout(() => {
+window.addEventListener('load', setTimeout(function(){
   window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
    canvas = document.querySelector("#canvas");
    ctx = canvas.getContext("2d");
@@ -95,8 +95,7 @@ window.addEventListener('load', setTimeout(() => {
    circles = [];
    current_circle = new currentCircle(0, 0);
   init(80)
-  console.log(233)
-}), 8000);
+}), 2000);
 window.onmousemove = function (e) {
   e = e || window.event;
   current_circle.x = e.clientX;

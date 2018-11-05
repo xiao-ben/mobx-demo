@@ -1,15 +1,14 @@
 import React from 'react'
-import { Route, Switch } from 'react-router-dom'
-import Counter from './App'
+import { Route, Switch } from 'react-router'
+import Home from './components/Home/Home'
 import Login from './components/Login/Login.js'
 
 const Routers = () => {
-    console.log(this, 'porps')
     return (
         <Switch>
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/home" component={Counter} />
-            <Route render={() => <h1>找不到此页面</h1>} />
+            <Route exact path="/login" noTopNavBar={true} component={Login} />
+            <Route exact path="/home" component={Home} />
+            <Route render={() => <h1>123</h1>} />
         </Switch>
     )
 }

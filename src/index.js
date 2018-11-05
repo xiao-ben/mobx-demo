@@ -1,16 +1,19 @@
 
 import React from 'react'
-import registerServiceWorker from './registerServiceWorker';
-import { Provider } from 'mobx-react';
-import { render } from 'react-dom';
+import registerServiceWorker from './registerServiceWorker'
+import { Provider } from 'mobx-react'
+import { render } from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import * as stores from './stores/index'
+import App from './App'
 import Routers from './router'
 
 render(
   <Provider store={stores} >
     <Router>
-      <Routers />
+      <App>
+          <Routers/>
+      </App>
     </Router>
   </Provider>,
   document.getElementById('root')
