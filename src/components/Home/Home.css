@@ -1,0 +1,7 @@
+.navContent {
+    display: flex;
+}
+
+.ant-menu {
+    border-right: 0;
+}

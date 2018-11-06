@@ -10,7 +10,6 @@ const FormItem = Form.Item;
 class Login extends Component {
     constructor(props) {
         super(props)
-        console.log(props, 'props')
         this.store = props.store.loginStore
     }
 
@@ -36,7 +35,6 @@ class Login extends Component {
 
     renderLoginForm = () => {
         const { getFieldDecorator } = this.props.form
-        console.log(this.store, 123)
         return (
             <Form onSubmit={this.handleSubmit} className="login-form">
                 <FormItem>

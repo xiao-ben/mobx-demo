@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx';
-import axios from 'axios'
+import axios from '../lib/http'
+import Cookies from 'js-cookie'
 
 class LoginStore {
 
@@ -15,7 +16,8 @@ class LoginStore {
         this.userName = values.userName
         this.password = values.password
         console.log(this.key, 'key')
-        return axios.get('http://api.apiopen.top/singlePoetry')
+        Cookies.set('login', '1231313')
+        return axios('http://api.apiopen.top/singlePoetry')
     }
 
     @action.bound fn = index => {this.todos[index].count = this.todos[index].count + 1} 

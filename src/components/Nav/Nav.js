@@ -12,7 +12,7 @@ class Nav extends Component {
     render() {
         return (
             <div className="navWrap">
-                <div className="topNavBar">{this.store.navList[1]}</div>
+                <div className="topNavBar">智慧路灯</div>
             </div>
         )
     }
