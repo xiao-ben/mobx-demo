@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { withRouter } from 'react-router'
-import Nav from './components/Nav/Nav';
 import 'antd/dist/antd.css';
 import './App.css';
 
@@ -14,10 +13,8 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.props, 'props123')
     return (
       <div>
-        {!this.props.noTopNavBar && <Nav/>}
         {this.props.children}
       </div>
     )

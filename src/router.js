@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route, Switch } from 'react-router'
+import { Switch } from 'react-router'
+import Route from './route'
 import Home from './components/Home/Home'
 import Login from './components/Login/Login.js'
 
@@ -8,9 +9,14 @@ const Routers = () => {
         <Switch>
             <Route exact path="/login" noTopNavBar={true} component={Login} />
             <Route exact path="/home" component={Home} />
-            <Route render={() => <h1>123</h1>} />
+            <Route component={NotFound} />
         </Switch>
     )
+}
+
+
+const NotFound = () => {
+    return <div><h1>not found</h1></div>
 }
 
 
