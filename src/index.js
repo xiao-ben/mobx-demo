@@ -5,15 +5,13 @@ import { Provider } from 'mobx-react'
 import { render } from 'react-dom'
 import { BrowserRouter as Router } from 'react-router-dom'
 import * as stores from './stores/index'
-import App from './App'
 import Routers from './router'
+import 'antd/dist/antd.css';
 
 render(
   <Provider store={stores} >
     <Router>
-      <App>
-          <Routers/>
-      </App>
+      <Routers />
     </Router>
   </Provider>,
   document.getElementById('root')

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route } from 'react-router'
+import { Route } from 'react-router-dom'
 import Nav from './components/Nav/Nav'
 import './layout.css'
 
@@ -8,7 +8,7 @@ const RouterWrap = ({ component: Component, noTopNavBar, ...rest }) =>  {
         <Route {...rest} render={matchProps => (
             <div>
                 {!noTopNavBar && <Nav />}
-                <div class="content">
+                <div className="content">
                     <Component {...matchProps}/>
                 </div>
             </div>

@@ -1,8 +1,10 @@
 .navWrap {
     height: 50px;
+    z-index: 1000;
 }
 
 .topNavBar {
+    z-index: 1000;
     color: #fff;
     padding-left: 20px;
     line-height: 50px;

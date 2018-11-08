@@ -1,7 +1,26 @@
 .navContent {
+    width: 1000px;
+    margin: 0 auto;
     display: flex;
 }
 
-.ant-menu {
+.homeRoot {
+    padding: 20px;
+    width: 100%;
+    min-height: calc(100vh - 50px);
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+.menu {
+    height: calc(100vh - 90px);
+    font-weight: 600;
     border-right: 0;
+}
+
+.homeBody {
+    width: 100%;
+    margin-left: 15px;
+    min-height: calc(100vh - 90px);
+    background-color: #fff;
+    padding: 10px 20px;
 }

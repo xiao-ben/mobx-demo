@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Redirect } from 'react-router'
+import { Switch, Redirect } from 'react-router-dom'
 import Route from './route'
 import Home from './components/Home/Home'
 import Login from './components/Login/Login.js'
@@ -9,7 +9,7 @@ const Routers = () => {
         <Switch>
             <Route exact path="/" component={() => <Redirect to="/login" />} />
             <Route exact path="/login" noTopNavBar={true} component={Login} />
-            <Route exact path="/home" component={Home} />
+            <Route path="/home" component={Home} />
             <Route component={NotFound} />
         </Switch>
     )
