@@ -5,7 +5,6 @@ import Role from '../Role/Role'
 import './Home.css'
 
 const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
 
 class Home extends Component {
     render() {
