@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Menu } from 'antd'
-import { Route, Switch, Link } from 'react-router-dom'
+import { Route, Switch, Link, Redirect } from 'react-router-dom'
 import Role from '../Role/Role'
+import Environment from '../Environment/Environment'
+import { path } from '../../config'
 import './Home.css'
-
-const SubMenu = Menu.SubMenu;
 
 class Home extends Component {
     render() {
@@ -15,21 +15,29 @@ class Home extends Component {
                         className="menu"
                         onClick={this.handleClick}
                         style={{ width: 256 }}
-                        defaultSelectedKeys={['1']}
                         defaultOpenKeys={['sub1']}
                         mode="inline"
+                        defaultSelectedKeys={[path[0].value]}
                     >
-                        <SubMenu key="sub1" title="用户管理">
-                            <Menu.Item key="1"><Link to="/home/role">角色管理</Link></Menu.Item>
-                            <Menu.Item key="2">人员管理</Menu.Item>
-                        </SubMenu>
-                        <Menu.Item key="3">环境监测</Menu.Item>
-                        <Menu.Item key="4">路灯管理</Menu.Item>
-                        <Menu.Item key="5">喷雾机管理</Menu.Item>
+                        {
+                            path.map(item => <Menu.Item key={item.value}><Link to={`/home/${item.value}`}>{item.name}</Link></Menu.Item>)
+                        }
                     </Menu>
                     <div className="homeBody">
                         <Switch>
-                            <Route exact path="/home/role" component={Role} />
+                            <Route exact path="/home/" component={() => <Redirect to="/home/role" />} />
+                            {/* {
+                                path.map(item => {
+                                    if (item.value === "role" || item.value === "environment") {
+                                        return <Route exact path={`/home/${item.value}`} component={require(`../${item.component}/${item.component}`)} />
+                                    } else {
+                                        return <Route exact path={`/home/${item.value}`} component={Role} />
+                                    }
+                                })
+                                        
+                            } */}
+                            <Route exact path={`/home/role`} component={Role} />
+                            <Route exact path={`/home/environment`} component={Environment} />
                         </Switch>
                     </div>
                 </div>

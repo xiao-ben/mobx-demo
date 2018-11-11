@@ -12,7 +12,6 @@
 }
 
 .menu {
-    height: calc(100vh - 90px);
     font-weight: 600;
     border-right: 0;
 }

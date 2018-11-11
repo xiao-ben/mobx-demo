@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react'
-import { Modal, Form, Input, Select } from 'antd';
+import { Modal, Form, Input, Select } from 'antd'
 import { path } from '../../../../config'
 
 const FormItem = Form.Item;
@@ -22,7 +22,7 @@ class RoleModal extends Component {
 
     render() {
         const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
-        console.log(this.props.value, 'porpsvalue')
+        console.log('porpsvalue')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -57,7 +57,7 @@ class RoleModal extends Component {
                     <FormItem {...formItemLayout} label="权限">
                         {getFieldDecorator('rights', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? initialValue.rights || [] : []
+                            initialValue: initialValue ? [...initialValue.rights || []] : []
                         })(
                             <Select
                                 mode="multiple"

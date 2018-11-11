@@ -1,19 +1,20 @@
 import React, { Component } from 'react'
 import { Table, Divider, Tag, Button  } from 'antd'
 import RoleModal from './components/RoleModal'
+import { inject, observer } from 'mobx-react';
+import { path } from '../../config'
 import './Role.css'
 
-const data = [{
-  key: '1',
-  roleName: '路灯',
-  rights: ['role', 'member'],
-}]
-
+@inject('store') @observer
 class Role extends Component {
-  state = {
-    value: {},
-    visible: false,
-    confirmLoading: false,
+  constructor(props) {
+    super(props)
+    this.store = props.store.roleStore
+    this.state = {
+      value: {},
+      visible: false,
+      confirmLoading: false,
+    }
   }
 
   showModal = () => {
@@ -27,9 +28,9 @@ class Role extends Component {
   handleOk = (value) => {
     console.log(value, 'value')
     this.setState({
-      ModalText: 'The modal will be closed after two seconds',
       confirmLoading: true,
     })
+    this.store.addRole(value)
     setTimeout(() => {
       this.setState({
         visible: false,
@@ -54,8 +55,13 @@ class Role extends Component {
     })
   }
 
+  onDelete = value => {
+    this.store.deleteRole(value)
+  }
+
   render() {
     const { visible, confirmLoading, value, title } = this.state
+    console.log(this.store.roleDate, 'store')
     const columns = [{
       title: '角色名称',
       dataIndex: 'roleName',
@@ -66,7 +72,7 @@ class Role extends Component {
       dataIndex: 'rights',
       render: rights => (
         <span>
-          {rights.map(tag => <Tag color="blue" key={tag}>{tag}</Tag>)}
+          {rights.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
         </span>
       ),
     }, {
@@ -76,7 +82,7 @@ class Role extends Component {
         <span>
           <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
           <Divider type="vertical" />
-          <a href="javascript:">删除</a>
+          <a href="javascript:" onClick={() => this.onDelete(record)}>删除</a>
         </span>
       ),
     }]
@@ -88,7 +94,7 @@ class Role extends Component {
             添加角色
           </Button>
         </div>
-        <Table columns={columns} dataSource={data} />
+        <Table columns={columns} dataSource={[...this.store.roleDate]} />
         <RoleModal 
           title={title}
           visible={visible}
