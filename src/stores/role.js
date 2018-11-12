@@ -7,7 +7,7 @@ class RoleStore {
         {
             key: '1',
             roleName: '路灯',
-            rights: ['role', 'member'],
+            manager: ['role', 'member'],
         }
     ]
 

@@ -68,11 +68,11 @@ class Role extends Component {
       key: 'roleName',
     }, {
       title: '权限',
-      key: 'rights',
-      dataIndex: 'rights',
-      render: rights => (
+      key: 'manager',
+      dataIndex: 'manager',
+      render: manager => (
         <span>
-          {rights.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
+          {manager.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
         </span>
       ),
     }, {

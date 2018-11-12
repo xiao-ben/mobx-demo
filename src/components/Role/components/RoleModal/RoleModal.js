@@ -55,9 +55,9 @@ class RoleModal extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="权限">
-                        {getFieldDecorator('rights', {
+                        {getFieldDecorator('manager', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? [...initialValue.rights || []] : []
+                            initialValue: initialValue ? [...initialValue.manager || []] : []
                         })(
                             <Select
                                 mode="multiple"

@@ -18,7 +18,7 @@ const path = [
     }, {
         name: '路灯管理',
         value: 'streetlight',
-        component: 'Streetlight'
+        component: 'StreetLight'
     }, {
         name: '喷雾机管理',
         value: 'sprayer',
