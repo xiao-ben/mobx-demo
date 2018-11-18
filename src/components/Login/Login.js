@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Tabs, Form, Icon, Input, Button, Checkbox } from 'antd'
-import { inject, observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react'
+import { init, currentCircle } from '../../lib/canvas'
 
 import './Login.css'
 const TabPane = Tabs.TabPane
@@ -11,6 +12,16 @@ class Login extends Component {
     constructor(props) {
         super(props)
         this.store = props.store.loginStore
+    }
+
+    componentDidMount() {
+        const canvas = document.querySelector("#canvas");
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width = canvas.offsetWidth;
+        const h = canvas.height = canvas.offsetHeight;
+        const circles = [];
+        const current_circle = new currentCircle(0, 0);
+        init(100, w, h, circles, current_circle, ctx)
     }
 
     handleSubmit = (e) => {
