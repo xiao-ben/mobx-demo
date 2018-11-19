@@ -4,6 +4,7 @@ import { Route, Switch, Link, Redirect } from 'react-router-dom'
 import Role from '../Role/Role'
 import Environment from '../Environment/Environment'
 import Member from '../Member/Member'
+import Devices from '../Devices/Devices'
 import { path } from '../../config'
 import './Home.css'
 
@@ -40,6 +41,7 @@ class Home extends Component {
                             <Route exact path={`/home/role`} component={Role} />
                             <Route exact path={`/home/member`} component={Member} />
                             <Route exact path={`/home/environment`} component={Environment} />
+                            <Route exact path={`/home/devices`} component={Devices} />
                         </Switch>
                     </div>
                 </div>
