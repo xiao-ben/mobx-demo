@@ -9,7 +9,14 @@ import { path } from '../../config'
 import './Home.css'
 
 class Home extends Component {
+    
+    componentDidMount() {
+        console.log(this.props.history.location.pathname.split('/')[2], 'props')
+    }
+
+
     render() {
+        const {history: {location}} = this.props
         return (
             <div className="homeRoot">
                 <div className="navContent">
@@ -19,7 +26,7 @@ class Home extends Component {
                         style={{ width: 256 }}
                         defaultOpenKeys={['sub1']}
                         mode="inline"
-                        defaultSelectedKeys={[path[0].value]}
+                        defaultSelectedKeys={[location.pathname.split('/')[2] || path[0].value]}
                     >
                         {
                             path.map(item => <Menu.Item key={item.value}><Link to={`/home/${item.value}`}>{item.name}</Link></Menu.Item>)

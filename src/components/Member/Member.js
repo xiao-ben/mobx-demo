@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Table, Divider, Tag, Button  } from 'antd'
+import { Table, Divider, Tag, Button, Popconfirm, message} from 'antd'
 import MemberModal from './components/MemberModal'
 import { inject, observer } from 'mobx-react';
 import { path } from '../../config'
@@ -57,6 +57,7 @@ class Member extends Component {
 
   onDelete = value => {
     this.store.deletemember(value)
+    message.info('删除成功')
   }
 
   render() {
@@ -82,7 +83,9 @@ class Member extends Component {
         <span>
           <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
           <Divider type="vertical" />
-          <a href="javascript:" onClick={() => this.onDelete(record)}>删除</a>
+          <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.onDelete(record)} okText="确定" cancelText="取消">
+            <a href="javascript:">删除</a>
+          </Popconfirm>
         </span>
       ),
     }]

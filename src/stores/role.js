@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action } from 'mobx'
 import axios from '../lib/http'
 
 class RoleStore {
@@ -12,10 +12,12 @@ class RoleStore {
     ]
 
     @action addRole = role => {
-        axios('123', {
+        return axios('123', {
             method: 'post',
             data: role
-        })
+        }).then(
+            this.roleDate = this.roleDate.concat(role)
+        )
         this.roleDate = this.roleDate.concat(role)
     }
 
