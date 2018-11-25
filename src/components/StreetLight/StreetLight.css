@@ -1,0 +1,31 @@
+.lightTitle {
+    font-weight: 600;
+}
+
+.light {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.lightSwitch {
+    margin-left: 10px !important;
+}
+
+.lightSection {
+    width: calc(50% - 10px);
+    margin-right: 10px;
+    border: 1px solid #ebedf0;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.streetLightSlider {
+    display: flex;
+    align-items: center;
+}
+
+.lightSlider {
+    width: 80%;
+    margin-left: 10px !important;
+}
