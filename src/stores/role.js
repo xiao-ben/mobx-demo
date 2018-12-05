@@ -12,13 +12,16 @@ class RoleStore {
     ]
 
     @action addRole = role => {
-        return axios('123', {
+        return axios('/123', {
             method: 'post',
             data: role
         }).then(
-            this.roleDate = this.roleDate.concat(role)
+            (res) => {
+                this.roleDate = this.roleDate.concat(role)
+                console.log(res)
+            }
         )
-        this.roleDate = this.roleDate.concat(role)
+        // this.roleDate = this.roleDate.concat(role)
     }
 
     @action deleteRole = role => {

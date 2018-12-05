@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Tabs, Form, Icon, Input, Button, Checkbox } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
-
 import './Login.css'
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -30,7 +29,8 @@ class Login extends Component {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        if (res.data.code === 200) {
+                        console.log(res)
+                        if (res.data.data.success) {
                             window.location.href = '/home'
                         }
                     }

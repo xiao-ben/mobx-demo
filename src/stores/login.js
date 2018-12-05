@@ -1,6 +1,7 @@
 import { observable, action } from 'mobx';
 import axios from '../lib/http'
 import Cookies from 'js-cookie'
+import md5 from 'md5'
 
 class LoginStore {
 
@@ -15,9 +16,13 @@ class LoginStore {
     @action handleLogin = values => {
         this.userName = values.userName
         this.password = values.password
-        console.log(this.key, 'key')
-        Cookies.set('login', '1231313')
-        return axios('http://api.apiopen.top/singlePoetry')
+        return axios('/smart_site/account/login', {
+            method: 'post',
+            data: {
+                user_name: values.userName,
+                pass_word: md5(values.password)
+            }
+        })
     }
 
     @action.bound fn = index => {this.todos[index].count = this.todos[index].count + 1} 
