@@ -21,7 +21,7 @@ class MemberModal extends Component {
     }
 
     render() {
-        const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
+        const { title, visible, confirmLoading, onCancel, value: initialValue, roles } = this.props
         console.log('porpsvalue')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
@@ -64,7 +64,7 @@ class MemberModal extends Component {
                                 placeholder="请选择"                                
                             >
                                 {
-                                    path.map(item => <Option key={item.value}>{item.name}</Option>)
+                                    roles.map(item => <Option key={item.key}>{item.roleName}</Option>)
                                 }
                             </Select>
                         )}

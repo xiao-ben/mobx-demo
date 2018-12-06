@@ -17,6 +17,11 @@ class Member extends Component {
     }
   }
 
+  componentDidMount() {
+    this.store.getRole()
+    this.store.getMember()
+  }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -62,8 +67,9 @@ class Member extends Component {
 
   render() {
     const { visible, confirmLoading, value, title } = this.state
+    const { roleDate } = this.store 
     console.log(this.store.memberDate, 'store')
-    const columns = [{
+    const columns = roleDate ? [{
       title: '用户名称',
       dataIndex: 'memberName',
       key: 'memberName',
@@ -73,7 +79,11 @@ class Member extends Component {
       dataIndex: 'manager',
       render: manager => (
         <span>
-          {manager.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
+          {manager.map(tag => {
+            const role = roleDate.find(item => item.key === tag.id.toString())
+            console.log(tag.id, roleDate, role,  '23131' )
+            return <Tag color="blue" key={tag.id}>{role ? role.roleName : ''}</Tag>}
+            )}
         </span>
       ),
     }, {
@@ -88,9 +98,9 @@ class Member extends Component {
           </Popconfirm>
         </span>
       ),
-    }]
+    }] : []
     return (
-      <div>
+      roleDate && <div>
         <div className="memberTitleSection">
           <div className="memberTitle">用户管理</div>
           <Button type="primary" onClick={this.showModal}>
@@ -105,6 +115,7 @@ class Member extends Component {
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           value={value}
+          roles={roleDate}
         />
       </div>
     )

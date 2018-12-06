@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import { withRouter } from "react-router" 
 import { inject, observer } from 'mobx-react'
 import { Icon, Popconfirm, message } from 'antd'
+import Cookies from 'js-cookie'
 import './TopNavBar.css'
 
-@inject('store') @observer
+@inject('store') @observer @withRouter
 class Nav extends Component {
     constructor(props) {
         super(props)
@@ -11,7 +13,9 @@ class Nav extends Component {
     }
 
     confirm = () => {
+        Cookies.remove('L_USM')
         message.info('退出成功')
+        this.props.history.push('/')
     }
 
 

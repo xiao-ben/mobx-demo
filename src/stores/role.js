@@ -7,28 +7,70 @@ class RoleStore {
         {
             key: '1',
             roleName: '路灯',
-            manager: ['role', 'member'],
+            manager: [1, 2],
         }
     ]
 
-    @action addRole = role => {
-        return axios('/123', {
-            method: 'post',
-            data: role
-        }).then(
-            (res) => {
-                this.roleDate = this.roleDate.concat(role)
-                console.log(res)
+    @action getRole = () => {
+        return axios('/smart_site/manager/get-role-list').then(
+            res => {
+                const data = res.data.data
+                if (!data || !data.length) return
+                this.roleDate = data.map(item =>  ({
+                    key: item.id,
+                    roleName: item.role_name,
+                    manager: item.managers ? item.managers.map(item => ({
+                        ...item,
+                        id: Number(item.manager_id),
+                    })) : [],
+                    ...data
+                }))
             }
         )
-        // this.roleDate = this.roleDate.concat(role)
+    }
+
+    @action editRole = role => {
+        return axios('/smart_site/manager/reset-role', {
+            method: 'post',
+            data: {
+                managerIds: role.manager,
+                roleId: role.roleId
+            }
+        }).then(
+            (res) => {
+                if (!res.data.data) return
+                this.getRole()
+            }
+        )
+    }
+
+    @action addRole = role => {
+        return axios('/smart_site/manager/add-role', {
+            method: 'post',
+            data: {
+                managerIds: role.manager,
+                roleName: role.roleName
+            }
+        }).then(
+            (res) => {
+                if (!res.data) return
+                this.getRole()
+            }
+        )
     }
 
     @action deleteRole = role => {
-        // axios('', {
-        //     method: 'delete',
-        // })
-        this.roleDate.remove(role)
+        axios('/smart_site/manager/delete-role', {
+            method: 'post',
+            data: {
+                roleId: role.key
+            }
+        }).then(
+            res => {
+                if (!res.data.data) return
+                this.roleDate.remove(role)
+            }
+        )
     }
 }
 const roleStore = new RoleStore();

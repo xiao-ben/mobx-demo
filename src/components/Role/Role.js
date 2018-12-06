@@ -17,6 +17,10 @@ class Role extends Component {
     }
   }
 
+  componentDidMount() {
+    this.store.getRole()
+  }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -26,11 +30,15 @@ class Role extends Component {
   }
 
   handleOk = (value) => {
-    console.log(value, 'value')
     this.setState({
       confirmLoading: true,
     })
-    this.store.addRole(value)
+    if (this.state.title === "添加角色") {
+      this.store.addRole(value)
+    } else {
+      this.store.editRole(value)
+    }
+    
     setTimeout(() => {
       this.setState({
         visible: false,
@@ -56,6 +64,7 @@ class Role extends Component {
   }
 
   onDelete = value => {
+    console.log(value, 'valuesss')
     this.store.deleteRole(value)
     message.info('删除成功')
   }
@@ -73,7 +82,8 @@ class Role extends Component {
       dataIndex: 'manager',
       render: manager => (
         <span>
-          {manager.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
+          {manager.map(tag => {
+            return <Tag color="blue" key={tag.id}>{tag && tag.manager_name ? tag.manager_name : ''}</Tag>})}
         </span>
       ),
     }, {

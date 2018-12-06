@@ -8,12 +8,17 @@ import StreetLight from '../StreetLight/StreetLight'
 import Sprayer from '../Sprayer/Sprayer'
 import Devices from '../Devices/Devices'
 import { path } from '../../config'
+import axios from '../../lib/http'
 import './Home.css'
 
 class Home extends Component {
     
     componentDidMount() {
-        console.log(this.props.history.location.pathname.split('/')[2], 'props')
+        // axios('/smart_site/manager/get-managers').then(res => {
+        //     this.setState({
+        //         path: res.data.data || path
+        //     })
+        // })
     }
 
 

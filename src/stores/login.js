@@ -19,8 +19,8 @@ class LoginStore {
         return axios('/smart_site/account/login', {
             method: 'post',
             data: {
-                user_name: values.userName,
-                pass_word: md5(values.password)
+                userName: values.userName,
+                password: md5(values.password)
             }
         })
     }

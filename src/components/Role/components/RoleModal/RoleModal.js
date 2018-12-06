@@ -11,7 +11,10 @@ class RoleModal extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.onOk(values)
+                this.props.onOk({
+                    ...values,
+                    roleId: this.props.value.key
+                })
             }
         });
     }
@@ -22,7 +25,7 @@ class RoleModal extends Component {
 
     render() {
         const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
-        console.log('porpsvalue')
+        console.log(initialValue, initialValue.roleName, 'porpsvalue')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -57,14 +60,14 @@ class RoleModal extends Component {
                     <FormItem {...formItemLayout} label="权限">
                         {getFieldDecorator('manager', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? [...initialValue.manager || []] : []
+                            initialValue: initialValue && initialValue.manager ? initialValue.manager.map(item => item.id.toString()) || [] : []
                         })(
                             <Select
                                 mode="multiple"
                                 placeholder="请选择"                                
                             >
                                 {
-                                    path.map(item => <Option key={item.value}>{item.name}</Option>)
+                                    path.map(item => <Option key={item.id}>{item.name}</Option>)
                                 }
                             </Select>
                         )}

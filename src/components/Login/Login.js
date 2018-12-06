@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Tabs, Form, Icon, Input, Button, Checkbox } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
+import Cookies from 'js-cookie'
 import './Login.css'
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -29,7 +30,7 @@ class Login extends Component {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        console.log(res)
+                        Cookies.set('L_USM', 'T2hsTXBkNlp6Vm5ZVThtYmxBVE13SmxHbUpMTVNlYUd4ZFRHcjdXNW5PWlp2TXIyeE1KMW1nNEFuYmJWbQ%25253D%25253D')
                         if (res.data.data.success) {
                             window.location.href = '/home'
                         }
