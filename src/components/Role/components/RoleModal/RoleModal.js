@@ -25,7 +25,6 @@ class RoleModal extends Component {
 
     render() {
         const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
-        console.log(initialValue, initialValue.roleName, 'porpsvalue')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {

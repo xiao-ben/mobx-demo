@@ -7,12 +7,30 @@ import './layout.css'
 const RouterWrap = ({ component: Component, noTopNavBar, ...rest }) =>  {
     return (
         <Route {...rest} render={matchProps => {
-            return Cookies.get('L_USM') || matchProps.match.path === "/login" ? <div>
-                {!noTopNavBar && <Nav />}
-                <div className="content">
-                    <Component {...matchProps}/>
-                </div>
-            </div> : <Redirect to="/login" />
+
+            if (matchProps.match.path === "/login") {
+                if (Cookies.get('L_USM')) {
+                    return <Redirect to="/home" />
+                } else {
+                    return <div>
+                        {!noTopNavBar && <Nav />}
+                        <div className="content">
+                            <Component {...matchProps}/>
+                        </div>
+                    </div>
+                }
+            } else {
+                if (Cookies.get('L_USM')) {
+                    return <div>
+                                {!noTopNavBar && <Nav />}
+                                    <div className="content">
+                                    <Component {...matchProps}/>
+                                </div>
+                            </div>
+                } else {
+                    return <Redirect to="/login" />
+                }
+            }
         }} />
     )
 }

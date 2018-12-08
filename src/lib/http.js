@@ -11,11 +11,9 @@ export const defaults = {
 
 const baseUrl = 'http://39.106.114.35'
 export default (url, options = {}) => {
-    console.log(Cookies.get('login'), 'login')
     options = Object.assign({}, defaults, options, {
         headers: {
             accept: 'application/json, text/plain, */*',
-            // Cookies: JSON.stringify(Cookies.get()) || '',
             ...options.header,
         }
     })

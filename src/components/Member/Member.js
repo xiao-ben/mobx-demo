@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Table, Divider, Tag, Button, Popconfirm, message} from 'antd'
 import MemberModal from './components/MemberModal'
 import { inject, observer } from 'mobx-react';
-import { path } from '../../config'
 import './Member.css'
 
 @inject('store') @observer
@@ -31,28 +30,29 @@ class Member extends Component {
   }
 
   handleOk = (value) => {
-    console.log(value, 'value')
     this.setState({
       confirmLoading: true,
     })
-    this.store.addmember(value)
+    if(this.state.title === "添加用户") {
+      this.store.addmember(value)
+    } else {
+      this.store.editMember(value)
+    }
     setTimeout(() => {
       this.setState({
         visible: false,
         confirmLoading: false,
       })
-    }, 2000)
+    }, 1000)
   }
 
   handleCancel = () => {
-    console.log('Clicked cancel button')
     this.setState({
       visible: false,
     })
   }
 
   handleEdit = value => {
-    console.log(value, 'edit')
     this.setState({
       visible: true,
       title: '编辑用户',
@@ -68,7 +68,6 @@ class Member extends Component {
   render() {
     const { visible, confirmLoading, value, title } = this.state
     const { roleDate } = this.store 
-    console.log(this.store.memberDate, 'store')
     const columns = roleDate ? [{
       title: '用户名称',
       dataIndex: 'memberName',
@@ -79,10 +78,9 @@ class Member extends Component {
       dataIndex: 'manager',
       render: manager => (
         <span>
-          {manager.map(tag => {
+          {manager.map((tag, index) => {
             const role = roleDate.find(item => item.key === tag.id.toString())
-            console.log(tag.id, roleDate, role,  '23131' )
-            return <Tag color="blue" key={tag.id}>{role ? role.roleName : ''}</Tag>}
+            return <Tag color="blue" key={tag.index}>{role ? role.roleName : ''}</Tag>}
             )}
         </span>
       ),

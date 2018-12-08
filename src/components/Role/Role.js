@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Table, Divider, Tag, Button, Popconfirm, message } from 'antd'
 import RoleModal from './components/RoleModal'
 import { inject, observer } from 'mobx-react';
-import { path } from '../../config'
 import './Role.css'
 
 @inject('store') @observer
@@ -44,18 +43,16 @@ class Role extends Component {
         visible: false,
         confirmLoading: false,
       })
-    }, 2000)
+    }, 1000)
   }
 
   handleCancel = () => {
-    console.log('Clicked cancel button')
     this.setState({
       visible: false,
     })
   }
 
   handleEdit = value => {
-    console.log(value, 'edit')
     this.setState({
       visible: true,
       title: '编辑角色',
@@ -64,14 +61,12 @@ class Role extends Component {
   }
 
   onDelete = value => {
-    console.log(value, 'valuesss')
     this.store.deleteRole(value)
     message.info('删除成功')
   }
 
   render() {
     const { visible, confirmLoading, value, title } = this.state
-    console.log(this.store.roleDate, 'store')
     const columns = [{
       title: '角色名称',
       dataIndex: 'roleName',
@@ -82,8 +77,8 @@ class Role extends Component {
       dataIndex: 'manager',
       render: manager => (
         <span>
-          {manager.map(tag => {
-            return <Tag color="blue" key={tag.id}>{tag && tag.manager_name ? tag.manager_name : ''}</Tag>})}
+          {manager.map((tag,index) => {
+            return <Tag color="blue" key={index}>{tag && tag.manager_name ? tag.manager_name : ''}</Tag>})}
         </span>
       ),
     }, {

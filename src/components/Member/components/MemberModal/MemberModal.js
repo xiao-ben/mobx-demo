@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react'
 import { Modal, Form, Input, Select } from 'antd'
-import { path } from '../../../../config'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -11,7 +10,10 @@ class MemberModal extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.onOk(values)
+                this.props.onOk({
+                    ...values,
+                    userId: this.props.value.key
+                })
             }
         });
     }
@@ -22,7 +24,6 @@ class MemberModal extends Component {
 
     render() {
         const { title, visible, confirmLoading, onCancel, value: initialValue, roles } = this.props
-        console.log('porpsvalue')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -57,7 +58,7 @@ class MemberModal extends Component {
                     <FormItem {...formItemLayout} label="角色">
                         {getFieldDecorator('manager', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? [...initialValue.manager || []] : []
+                            initialValue:  initialValue && initialValue.manager ? initialValue.manager.map(item => item.id.toString()) || [] : []
                         })(
                             <Select
                                 mode="multiple"
@@ -69,13 +70,13 @@ class MemberModal extends Component {
                             </Select>
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="密码">
-                    {getFieldDecorator('password', {
-                        rules: [{ required: true, message: '请输入密码' }],
-                    })(
-                        <Input type="password" placeholder="密码" />
-                    )}
-                </FormItem>
+                    {title === '添加用户' && <FormItem {...formItemLayout} label="密码">
+                        {getFieldDecorator('password', {
+                            rules: [{ required: true, message: '请输入密码' }],
+                        })(
+                            <Input type="password" placeholder="密码" />
+                        )}
+                    </FormItem>}
                 </Form>
             </Modal>
         )

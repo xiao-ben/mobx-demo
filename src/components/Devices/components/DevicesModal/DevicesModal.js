@@ -20,8 +20,7 @@ class DevicesModal extends Component {
     }
 
     render() {
-        const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
-        console.log('porpsvalue')
+        const { title, visible, confirmLoading, onCancel, value: initialValue, types } = this.props
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -54,15 +53,16 @@ class DevicesModal extends Component {
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="设备名称">
-                        {getFieldDecorator('devicesName', {
+                        {getFieldDecorator('typeName', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? initialValue.devicesName : ''
+                            initialValue: initialValue ? initialValue.typeName : ''
                         })(
                             <Select
                                 placeholder="请选择"                                
                             >
-                                 <Option key="streetLight">路灯</Option>
-                                
+                                { 
+                                    types.map(item => <Option key={item.id}>{item.deviceName}</Option>)
+                                }   
                             </Select>
                         )}
                     </FormItem>

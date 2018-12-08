@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
-import { Table, Divider, Tag, Button  } from 'antd'
+import { Table, Tag, Button, Popconfirm } from 'antd'
 import DevicesModal from './components/DevicesModal'
 import { inject, observer } from 'mobx-react';
 import './Devices.css'
-
-const DevicesMapToName = {
-    streetLight: '路灯'
-}
 
 @inject('store') @observer
 class Devices extends Component {
@@ -20,6 +16,11 @@ class Devices extends Component {
     }
   }
 
+  componentDidMount() {
+    this.store.getDeviceTypes()
+    this.store.getDevices()
+  }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -29,7 +30,6 @@ class Devices extends Component {
   }
 
   handleOk = (value) => {
-    console.log(value, 'value')
     this.setState({
       confirmLoading: true,
     })
@@ -43,18 +43,16 @@ class Devices extends Component {
         visible: false,
         confirmLoading: false,
       })
-    }, 2000)
+    }, 1000)
   }
 
   handleCancel = () => {
-    console.log('Clicked cancel button')
     this.setState({
       visible: false,
     })
   }
 
   handleEdit = value => {
-    console.log(value, 'edit')
     this.setState({
       visible: true,
       title: '编辑设备',
@@ -68,26 +66,28 @@ class Devices extends Component {
 
   render() {
     const { visible, confirmLoading, value, title } = this.state
-    console.log(this.store.devicesDate, 'store')
+    const { deviceTypes } = this.store
     const columns = [{
       title: '设备 ID',
       dataIndex: 'id',
       key: 'id',
     }, {
-      title: '权限',
-      key: 'devicesName',
-      dataIndex: 'devicesName',
+      title: '名称',
+      key: 'deviceName',
+      dataIndex: 'deviceName',
       render: text => (
-           <Tag color="blue">{DevicesMapToName[text]}</Tag>
+           <Tag color="blue">{text}</Tag>
       ),
     }, {
       title: '操作',
       key: 'action',
       render: (text, record) => (
         <span>
-          <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
-          <Divider type="vertical" />
-          <a href="javascript:" onClick={() => this.onDelete(record)}>删除</a>
+          {/* <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
+          <Divider type="vertical" /> */}
+          <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.onDelete(record)} okText="确定" cancelText="取消">
+            <a href="javascript:">删除</a>
+          </Popconfirm>
         </span>
       ),
     }]
@@ -107,6 +107,7 @@ class Devices extends Component {
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           value={value}
+          types={deviceTypes}
         />
       </div>
     )

@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx';
 import axios from '../lib/http'
-import Cookies from 'js-cookie'
 import md5 from 'md5'
 
 class LoginStore {

@@ -1,18 +1,32 @@
 import React, { Component } from 'react'
 import ReactEcharts from 'echarts-for-react';
 import './Environment.css'
+import axios from '../../lib/http'
+import moment from 'moment'
 
 class Environment extends Component {
     state = {
-        data: [120, 132, 101, 134, 90, 230, 210]
+        status: []
     }
 
     componentDidMount() {
-        this.dataInterval = setInterval(() => {
+        this.getEnvironmentDate()
+        this.dataInterval = setInterval(this.getEnvironmentDate, 1000 * 60 * 10)
+    }
+
+    getEnvironmentDate = () => {
+        axios('/smart_site/devices/get-monitor-data').then(res => {
+            if (!res || !res.data || !res.data.data) return
+            const data = res.data.data
             this.setState({
-                data: this.state.data.map((item, index) => item + index * 10)
-            })}, 1000
-        )
+               status: res.data.data.map(item => ({
+                ...item,
+                legend: item.legend,
+                time: item.time.map(time => moment(time * 1000).format('HH:mm')),
+                data: item.data
+                }))
+            })
+        })
     }
 
     componentWillUnmount() {
@@ -20,18 +34,32 @@ class Environment extends Component {
     }
 
     render() {
-        console.log(this.state.data, 'data')
+        const { status } = this.state
+        console.log(status, 'status')
         return <div>
-            <ReactEcharts
+            {status.map(item => (
+                <ReactEcharts
+                key={item.id}
                 option={{
                     title: {
-                        text: '折线图堆叠'
+                        text: item.device_id
                     },
                     tooltip: {
-                        trigger: 'axis'
+                        trigger: 'axis',
+                        formatter: function(params) {
+                            let result = ''
+                            params.map((item, index) => ({
+                                ...item,
+                                index: index
+                            })).sort((a, b) => b.value - a.value).forEach(function (col) {
+                                result += col.marker + " " + col.seriesName + " : " + col.value + item.unit[col.index] +"</br>";
+                            });
+                            return result;
+                        }
+                        // formatter: `{b} <br/>` + item.unit.map((unit, index) => `{a${index}} : {c${index}} ${unit}<br/>`).join('')
                     },
                     legend: {
-                        data:['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
+                        data: item.legend
                     },
                     grid: {
                         left: '3%',
@@ -39,51 +67,20 @@ class Environment extends Component {
                         bottom: '3%',
                         containLabel: true
                     },
-                    toolbox: {
-                        feature: {
-                            saveAsImage: {}
-                        }
-                    },
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['周一','周二','周三','周四','周五','周六','周日']
+                        data: item.time
                     },
                     yAxis: {
                         type: 'value'
                     },
-                    series: [
-                        {
-                            name:'邮件营销',
-                            type:'line',
-                            stack: '总量',
-                            data: this.state.data
-                        },
-                        {
-                            name:'联盟广告',
-                            type:'line',
-                            stack: '总量',
-                            data:[220, 182, 191, 234, 290, 330, 310]
-                        },
-                        {
-                            name:'视频广告',
-                            type:'line',
-                            stack: '总量',
-                            data:[150, 232, 201, 154, 190, 330, 410]
-                        },
-                        {
-                            name:'直接访问',
-                            type:'line',
-                            stack: '总量',
-                            data:[320, 332, 301, 334, 390, 330, 320]
-                        },
-                        {
-                            name:'搜索引擎',
-                            type:'line',
-                            stack: '总量',
-                            data:[820, 932, 901, 934, 1290, 1330, 1320]
-                        }
-                    ]
+                    series: item.data.map((data, index) => ({
+                        name: item.legend[index],
+                        type:'line',
+                        stack: '总量',
+                        data: data
+                    }))
                 }}
                 notMerge={true}
                 lazyUpdate={true}
@@ -91,6 +88,7 @@ class Environment extends Component {
                 onChartReady={this.onChartReadyCallback}
                 // onEvents={EventsDict}
                 opts={{}} />
+            ))}
         </div>
     }
 }

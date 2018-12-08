@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Tabs, Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Tabs, Form, Icon, Input, Button, message } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
 import Cookies from 'js-cookie'
@@ -30,9 +30,11 @@ class Login extends Component {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        Cookies.set('L_USM', 'T2hsTXBkNlp6Vm5ZVThtYmxBVE13SmxHbUpMTVNlYUd4ZFRHcjdXNW5PWlp2TXIyeE1KMW1nNEFuYmJWbQ%25253D%25253D')
+                        // Cookies.set('L_USM', 'T2hsTXBkNlp6Vm5ZVThtYmxBVE13SmxHbUpMTVNlYUd4ZFRHcjdXNW5PWlp2TXIyeE1KMW1nNEFuYmJWbQ%25253D%25253D')
                         if (res.data.data.success) {
                             window.location.href = '/home'
+                        } else {
+                            message.error('用户或密码错误')
                         }
                     }
                 )
@@ -64,15 +66,9 @@ class Login extends Component {
                     )}
                 </FormItem>
                 <FormItem>
-                    {getFieldDecorator('remember', {
-                        valuePropName: 'checked',
-                        initialValue: true,
-                    })(
-                        <Checkbox>记住密码</Checkbox>
-                    )}
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
-                                    </Button>
+                    </Button>
                 </FormItem>
             </Form>
         )

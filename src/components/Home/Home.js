@@ -12,18 +12,48 @@ import axios from '../../lib/http'
 import './Home.css'
 
 class Home extends Component {
+    state = {
+        managers: []
+    }
     
     componentDidMount() {
-        // axios('/smart_site/manager/get-managers').then(res => {
-        //     this.setState({
-        //         path: res.data.data || path
-        //     })
-        // })
+        axios('/smart_site/manager/get-user-managers').then(res => {
+            if (!res.data.data) return 
+            this.setState({
+                managers: res.data.data.map(item => ({
+                    name: item.manager_name,
+                    id: item.id,
+                    value: item.comment,
+                    component: this.titleCase(item.comment)
+                }))
+            })
+        })
     }
 
+    titleCase = str =>{  
+        return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());  
+    }  
+
+    renderRouter(manager) {
+        switch(manager) {
+            case 'Role' :
+                return <Route exact key={manager} path={`/home/role`} component={Role} />
+            case 'Member' :
+                return <Route exact key={manager} path={`/home/member`} component={Member} />
+            case 'Environment' :
+                return <Route exact key={manager} path={`/home/environment`} component={Environment} />
+            case 'Devices' :
+                return <Route exact key={manager} path={`/home/devices`} component={Devices} />
+            case 'Streetlight' :
+                return <Route exact key={manager} path={`/home/streetLight`} component={StreetLight} />
+            case 'Sprayer' :
+                return <Route exact key={manager} path={`/home/sprayer`} component={Sprayer} />
+        }
+    }
 
     render() {
         const {history: {location}} = this.props
+        const {managers} = this.state
         return (
             <div className="homeRoot">
                 <div className="navContent">
@@ -36,28 +66,17 @@ class Home extends Component {
                         defaultSelectedKeys={[location.pathname.split('/')[2] || path[0].value]}
                     >
                         {
-                            path.map(item => <Menu.Item key={item.value}><Link to={`/home/${item.value}`}>{item.name}</Link></Menu.Item>)
+                            managers.map(item => <Menu.Item key={item.value}><Link to={`/home/${item.value}`}>{item.name}</Link></Menu.Item>)
                         }
                     </Menu>
                     <div className="homeBody">
                         <Switch>
                             <Route exact path="/home/" component={() => <Redirect to="/home/role" />} />
-                            {/* {
-                                path.map(item => {
-                                    if (item.value === "role" || item.value === "environment") {
-                                        return <Route exact path={`/home/${item.value}`} component={require(`../${item.component}/${item.component}`)} />
-                                    } else {
-                                        return <Route exact path={`/home/${item.value}`} component={Role} />
-                                    }
+                            {
+                                managers.map(item => {
+                                    return this.renderRouter(item.component)
                                 })
-                                        
-                            } */}
-                            <Route exact path={`/home/role`} component={Role} />
-                            <Route exact path={`/home/member`} component={Member} />
-                            <Route exact path={`/home/environment`} component={Environment} />
-                            <Route exact path={`/home/devices`} component={Devices} />
-                            <Route exact path={`/home/streetLight`} component={StreetLight} />
-                            <Route exact path={`/home/Sprayer`} component={Sprayer} />
+                            }
                         </Switch>
                     </div>
                 </div>

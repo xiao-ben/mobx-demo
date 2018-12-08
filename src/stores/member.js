@@ -1,6 +1,5 @@
 import { observable, action } from 'mobx';
 import axios from '../lib/http'
-import Item from 'antd/lib/list/Item';
 
 class MemberStore {
     @observable memberDate = [
@@ -39,6 +38,21 @@ class MemberStore {
         })
     }
 
+    @action editMember = user => {
+        return axios('/smart_site/manager/reset-user', {
+            method: 'post',
+            data: {
+                roleIds: user.manager,
+                userId: user.userId
+            }
+        }).then(
+            (res) => {
+                if (!res.data.data) return
+                this.getMember()
+            }
+        )
+    }
+
     @action addmember = member => {
         axios('/smart_site/manager/add-user', {
             method: 'post',
@@ -54,15 +68,15 @@ class MemberStore {
     }
 
     @action deletemember = member => {
-        axios('/smart_site/manager/delete-role', {
+        axios('/smart_site/manager/delete-user', {
             method: 'post',
             data: {
-                roleId: member.id
+                userId: member.key
             }
         }).then(
             res => {
                 if (!res.data.data) return
-                this.memberDate.remove(member)
+                this.getMember()
             }
         )
     }
