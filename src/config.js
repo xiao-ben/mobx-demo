@@ -5,7 +5,7 @@ const path = [
         value: 'role',
         component: 'Role',
     }, {
-        name: '人员管理',
+        name: '用户管理',
         value: 'member',
         id: 2,
         component: 'Meber'

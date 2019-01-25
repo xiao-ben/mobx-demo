@@ -33,6 +33,7 @@ class RoleStore {
         return axios('/smart_site/manager/reset-role', {
             method: 'post',
             data: {
+                roleName: role.roleName,
                 managerIds: role.manager,
                 roleId: role.roleId
             }

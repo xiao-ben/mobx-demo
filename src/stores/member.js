@@ -1,5 +1,6 @@
 import { observable, action } from 'mobx';
 import axios from '../lib/http'
+import md5 from 'md5'
 
 class MemberStore {
     @observable memberDate = [
@@ -31,6 +32,7 @@ class MemberStore {
             this.memberDate = res.data.data.map(item => ({
                 memberName: item.user_name,
                 key: item.id,
+                identify: item.manager,
                 manager: item.roles.map(role => ({
                     id: role.role_id
                 }))
@@ -42,8 +44,11 @@ class MemberStore {
         return axios('/smart_site/manager/reset-user', {
             method: 'post',
             data: {
+                userName: user.memberName,
                 roleIds: user.manager,
-                userId: user.userId
+                userId: user.userId,
+                manager: user.identify,
+                password: user.password ? md5(user.password) : null
             }
         }).then(
             (res) => {
@@ -58,8 +63,9 @@ class MemberStore {
             method: 'post',
             data: {
                 userName: member.memberName,
-                password: member.password,
-                roleIds: member.manager
+                password: md5(member.password),
+                roleIds: member.manager,
+                manager: member.identify
             }
         }).then(res => {
             if(!res.data.data) return

@@ -55,6 +55,19 @@ class MemberModal extends Component {
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
+                    <FormItem {...formItemLayout} label="登录身份">
+                        {getFieldDecorator('identify', {
+                            rules: [{ required: true, message: '输入不能为空' }],
+                            initialValue:  initialValue && initialValue.identify ? initialValue.identify : ''
+                        })(
+                            <Select
+                                placeholder="请选择"                                
+                            >
+                                <Option key={1}>管理员</Option>
+                                <Option key={0}>普通用户</Option>   
+                            </Select>
+                        )}
+                    </FormItem>
                     <FormItem {...formItemLayout} label="角色">
                         {getFieldDecorator('manager', {
                             rules: [{ required: true, message: '输入不能为空' }],
@@ -70,13 +83,13 @@ class MemberModal extends Component {
                             </Select>
                         )}
                     </FormItem>
-                    {title === '添加用户' && <FormItem {...formItemLayout} label="密码">
+                    <FormItem {...formItemLayout} label="密码">
                         {getFieldDecorator('password', {
-                            rules: [{ required: true, message: '请输入密码' }],
+                            rules: [{ required: title === "添加用户", message: '请输入密码' }],
                         })(
                             <Input type="password" placeholder="密码" />
                         )}
-                    </FormItem>}
+                    </FormItem>
                 </Form>
             </Modal>
         )

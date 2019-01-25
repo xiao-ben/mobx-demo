@@ -73,7 +73,7 @@ class Member extends Component {
       dataIndex: 'memberName',
       key: 'memberName',
     }, {
-      title: '角色',
+      title: '身份',
       key: 'manager',
       dataIndex: 'manager',
       render: manager => (

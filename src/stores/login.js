@@ -19,7 +19,8 @@ class LoginStore {
             method: 'post',
             data: {
                 userName: values.userName,
-                password: md5(values.password)
+                password: md5(values.password),
+                manager: this.key
             }
         })
     }

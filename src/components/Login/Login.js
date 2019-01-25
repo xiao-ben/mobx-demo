@@ -25,16 +25,16 @@ class Login extends Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        // Cookies.set('L_USM', 'T2hsTXBkNlp6Vm5ZVThtYmxBVE13SmxHbUpMTVNlYUd4ZFRHcjdXNW5PWlp2TXIyeE1KMW1nNEFuYmJWbQ%25253D%25253D')
+                        // Cookies.set('L_USM', 'cS1Sa0I4RDBWNVdFPVVEMUJ2MXNCbU9wQzdaM1MyUkZCbzEzRXVCa0I4RDBWNVdrPW4yeU5ySlZTMmlsPThvZlQ1eWRG')
                         if (res.data.data.success) {
                             window.location.href = '/home'
                         } else {
-                            message.error('用户或密码错误')
+                            message.error(res.data.data.message || '用户或密码错误')
                         }
                     }
                 )
@@ -80,10 +80,10 @@ class Login extends Component {
                 <div className="loginContent">
                     <div className="loginModal">
                         <Tabs defaultActiveKey="1" onChange={this.handleTabChaneg}>
-                            <TabPane tab="普通用户" key="1">
+                            <TabPane tab="普通用户" key="0">
                                 {this.renderLoginForm()}
                             </TabPane>
-                            <TabPane tab="管理员" key="2">
+                            <TabPane tab="管理员" key="1">
                                 {this.renderLoginForm()}
                             </TabPane>
                         </Tabs>
