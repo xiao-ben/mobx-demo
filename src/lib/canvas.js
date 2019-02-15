@@ -39,15 +39,12 @@ class Circle {
   }
   
 export class currentCircle extends Circle {
-    constructor(x, y) {
-      super(x, y)
-    }
     drawCircle(ctx) {
       ctx.beginPath();
       this.r = (this.r < 14 && this.r > 1) ? this.r + (Math.random() * 2 - 1) : 2;
       ctx.arc(this.x, this.y, this.r, 0, 360);
       ctx.closePath();
-      ctx.fillStyle = 'rgba(45, 120, 244, ' + (parseInt(Math.random() * 100) / 100) + ')';
+      ctx.fillStyle = "rgba(45, 120, 244, ' + (parseInt(Math.random() * 100) / 100) + ')"
       ctx.fill();
     }
   }
@@ -60,11 +57,9 @@ export class currentCircle extends Circle {
   
   
    const draw = function () {
-    console.log(w, h, circles.length, current_circle, ctx, 'qweqw')
     const length = circles.length
     ctx.clearRect(0, 0, w, h);
     for (let i = 0; i < length; i++) {
-        console.log(circles[i], 'circles')
       circles[i].move(w, h);
       circles[i].drawCircle(ctx);
       for (let j = i + 1; j < length; j++) {

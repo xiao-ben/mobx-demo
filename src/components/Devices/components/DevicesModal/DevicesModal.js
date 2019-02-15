@@ -1,20 +1,16 @@
 
 import React, { Component } from 'react'
 import { Modal, Form, Input, Select } from 'antd'
-import { path } from '../../../../config'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class RoleModal extends Component {
+class DevicesModal extends Component {
     onSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.onOk({
-                    ...values,
-                    roleId: this.props.value.key
-                })
+                this.props.onOk({...this.props.value, ...values})
             }
         });
     }
@@ -24,7 +20,7 @@ class RoleModal extends Component {
     }
 
     render() {
-        const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
+        const { title, visible, confirmLoading, onCancel, value: initialValue, types } = this.props
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -48,26 +44,25 @@ class RoleModal extends Component {
                 cancelText="取消"
             >
                 <Form onSubmit={this.onSubmit} className="login-form">
-                    <FormItem {...formItemLayout} label="角色名称" >
-                        {getFieldDecorator('roleName', {
+                    <FormItem {...formItemLayout} label="设备 ID" >
+                        {getFieldDecorator('id', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? initialValue.roleName || '' : ''
+                            initialValue: initialValue ? initialValue.id || '' : ''
                         })(
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="权限">
-                        {getFieldDecorator('manager', {
+                    <FormItem {...formItemLayout} label="设备名称">
+                        {getFieldDecorator('typeName', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue && initialValue.manager ? initialValue.manager.map(item => item.id.toString()) || [] : []
+                            initialValue: initialValue ? initialValue.typeName : ''
                         })(
                             <Select
-                                mode="multiple"
                                 placeholder="请选择"                                
                             >
-                                {
-                                    path.map(item => <Option key={item.id}>{item.name}</Option>)
-                                }
+                                { 
+                                    types.map(item => <Option key={item.id}>{item.deviceName}</Option>)
+                                }   
                             </Select>
                         )}
                     </FormItem>
@@ -77,6 +72,6 @@ class RoleModal extends Component {
     }
 }
 
-const WrapRoleModal = Form.create()(RoleModal);
+const WrapdevicesModal = Form.create()(DevicesModal);
 
-export default WrapRoleModal
+export default WrapdevicesModal

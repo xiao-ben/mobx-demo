@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
-import { Table, Divider, Tag, Button, Popconfirm, message } from 'antd'
-import RoleModal from './components/RoleModal'
+import { Table, Tag, Button, Popconfirm } from 'antd'
+import DevicesModal from './components/DevicesModal'
 import { inject, observer } from 'mobx-react';
-import './Role.css'
+import './Devices.css'
 
 @inject('store') @observer
-class Role extends Component {
+class Devices extends Component {
   constructor(props) {
     super(props)
-    this.store = props.store.roleStore
+    this.store = props.store.devicesStore
     this.state = {
       value: {},
       visible: false,
@@ -17,13 +17,14 @@ class Role extends Component {
   }
 
   componentDidMount() {
-    this.store.getRole()
+    this.store.getDeviceTypes()
+    this.store.getDevices()
   }
 
   showModal = () => {
     this.setState({
       visible: true,
-      title: '添加角色',
+      title: '添加设备',
       value: {}
     })
   }
@@ -32,12 +33,11 @@ class Role extends Component {
     this.setState({
       confirmLoading: true,
     })
-    if (this.state.title === "添加角色") {
-      this.store.addRole(value)
+    if (this.state.title === "编辑设备") {
+        this.store.editDevices(value)
     } else {
-      this.store.editRole(value)
+        this.store.addDevices(value)
     }
-    
     setTimeout(() => {
       this.setState({
         visible: false,
@@ -55,39 +55,36 @@ class Role extends Component {
   handleEdit = value => {
     this.setState({
       visible: true,
-      title: '编辑角色',
+      title: '编辑设备',
       value,
     })
   }
 
   onDelete = value => {
-    this.store.deleteRole(value)
-    message.info('删除成功')
+    this.store.deleteDevices(value)
   }
 
   render() {
     const { visible, confirmLoading, value, title } = this.state
+    const { deviceTypes } = this.store
     const columns = [{
-      title: '角色名称',
-      dataIndex: 'roleName',
-      key: 'roleName',
+      title: '设备 ID',
+      dataIndex: 'id',
+      key: 'id',
     }, {
-      title: '权限',
-      key: 'manager',
-      dataIndex: 'manager',
-      render: manager => (
-        <span>
-          {manager.map((tag,index) => {
-            return <Tag color="blue" key={index}>{tag && tag.manager_name ? tag.manager_name : ''}</Tag>})}
-        </span>
+      title: '名称',
+      key: 'deviceName',
+      dataIndex: 'deviceName',
+      render: text => (
+           <Tag color="blue">{text}</Tag>
       ),
     }, {
       title: '操作',
       key: 'action',
       render: (text, record) => (
         <span>
-          <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
-          <Divider type="vertical" />
+          {/* <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
+          <Divider type="vertical" /> */}
           <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.onDelete(record)} okText="确定" cancelText="取消">
             <a href="javascript:">删除</a>
           </Popconfirm>
@@ -96,24 +93,25 @@ class Role extends Component {
     }]
     return (
       <div>
-        <div className="roleTitleSection">
-          <div className="roleTitle">角色管理</div>
+        <div className="devicesTitleSection">
+          <div className="devicesTitle">设备管理</div>
           <Button type="primary" onClick={this.showModal}>
-            添加角色
+            添加设备
           </Button>
         </div>
-        <Table columns={columns} dataSource={[...this.store.roleDate]} />
-        <RoleModal 
+        <Table columns={columns} dataSource={[...this.store.devicesDate]} />
+        <DevicesModal 
           title={title}
           visible={visible}
           onOk={this.handleOk}
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           value={value}
+          types={deviceTypes}
         />
       </div>
     )
   }
 }
 
-export default Role
+export default Devices

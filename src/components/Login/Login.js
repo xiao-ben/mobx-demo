@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Tabs, Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Tabs, Form, Icon, Input, Button, message } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
-
+import Cookies from 'js-cookie'
 import './Login.css'
 const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
@@ -25,13 +25,16 @@ class Login extends Component {
     }
 
     handleSubmit = (e) => {
-        e.preventDefault();
+        e.preventDefault()
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        if (res.data.code === 200) {
+                        // Cookies.set('L_USM', 'cS1Sa0I4RDBWNVdFPVVEMUJ2MXNCbU9wQzdaM1MyUkZCbzEzRXVCa0I4RDBWNVdrPW4yeU5ySlZTMmlsPThvZlQ1eWRG')
+                        if (res.data.data.success) {
                             window.location.href = '/home'
+                        } else {
+                            message.error(res.data.data.message || '用户或密码错误')
                         }
                     }
                 )
@@ -63,15 +66,9 @@ class Login extends Component {
                     )}
                 </FormItem>
                 <FormItem>
-                    {getFieldDecorator('remember', {
-                        valuePropName: 'checked',
-                        initialValue: true,
-                    })(
-                        <Checkbox>记住密码</Checkbox>
-                    )}
                     <Button type="primary" htmlType="submit" className="login-form-button">
                         登录
-                                    </Button>
+                    </Button>
                 </FormItem>
             </Form>
         )
@@ -83,10 +80,10 @@ class Login extends Component {
                 <div className="loginContent">
                     <div className="loginModal">
                         <Tabs defaultActiveKey="1" onChange={this.handleTabChaneg}>
-                            <TabPane tab="普通用户" key="1">
+                            <TabPane tab="普通用户" key="0">
                                 {this.renderLoginForm()}
                             </TabPane>
-                            <TabPane tab="管理员" key="2">
+                            <TabPane tab="管理员" key="1">
                                 {this.renderLoginForm()}
                             </TabPane>
                         </Tabs>

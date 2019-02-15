@@ -1,0 +1,83 @@
+.lightTitle {
+    font-weight: 600;
+}
+
+.light {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.lightContent {
+    display: flex;
+    justify-items: flex-start;
+}
+
+.device {
+    line-height: 25px;
+    padding: 5px 10px;
+    width: 150px;
+    border-radius: 6px;
+    background-color: #fff;
+    background-clip: padding-box;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.lightStatus {
+    margin-right: 10px;
+}
+
+.lightSwitch {
+    margin-left: 10px !important;
+}
+
+.actived {
+    background-color: #e6f7ff;
+}
+
+.lightSection {
+    margin-left: 20px;
+    width: calc(100% - 180px);
+    padding: 10px;
+}
+
+.streetLightSlider {
+    display: flex;
+    align-items: center;
+}
+
+.lightSlider {
+    width: 80%;
+    margin-left: 10px !important;
+}
+
+.statusSection {
+    margin-bottom: 20px;
+}
+
+.addButton {
+    margin-left: 20px;
+}
+
+.environment {
+    display: flex;
+}
+
+.environment div {
+    width: 100%;
+}
+
+.selectedDevice {
+    background-color: #91d5ff
+}
+
+.deviceIds {
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.attributeIds {
+    margin: 10px;
+}

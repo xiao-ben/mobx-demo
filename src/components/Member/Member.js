@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
-import { Table, Divider, Tag, Button  } from 'antd'
+import { Table, Divider, Tag, Button, Popconfirm, message} from 'antd'
 import MemberModal from './components/MemberModal'
 import { inject, observer } from 'mobx-react';
-import { path } from '../../config'
 import './Member.css'
 
 @inject('store') @observer
@@ -17,6 +16,11 @@ class Member extends Component {
     }
   }
 
+  componentDidMount() {
+    this.store.getRole()
+    this.store.getMember()
+  }
+
   showModal = () => {
     this.setState({
       visible: true,
@@ -26,28 +30,29 @@ class Member extends Component {
   }
 
   handleOk = (value) => {
-    console.log(value, 'value')
     this.setState({
       confirmLoading: true,
     })
-    this.store.addmember(value)
+    if(this.state.title === "添加用户") {
+      this.store.addmember(value)
+    } else {
+      this.store.editMember(value)
+    }
     setTimeout(() => {
       this.setState({
         visible: false,
         confirmLoading: false,
       })
-    }, 2000)
+    }, 1000)
   }
 
   handleCancel = () => {
-    console.log('Clicked cancel button')
     this.setState({
       visible: false,
     })
   }
 
   handleEdit = value => {
-    console.log(value, 'edit')
     this.setState({
       visible: true,
       title: '编辑用户',
@@ -57,22 +62,26 @@ class Member extends Component {
 
   onDelete = value => {
     this.store.deletemember(value)
+    message.info('删除成功')
   }
 
   render() {
     const { visible, confirmLoading, value, title } = this.state
-    console.log(this.store.memberDate, 'store')
-    const columns = [{
+    const { roleDate } = this.store 
+    const columns = roleDate ? [{
       title: '用户名称',
       dataIndex: 'memberName',
       key: 'memberName',
     }, {
-      title: '角色',
+      title: '身份',
       key: 'manager',
       dataIndex: 'manager',
       render: manager => (
         <span>
-          {manager.map(tag => <Tag color="blue" key={tag}>{path.find(item => item.value === tag).name}</Tag>)}
+          {manager.map((tag, index) => {
+            const role = roleDate.find(item => item.key === tag.id.toString())
+            return <Tag color="blue" key={tag.index}>{role ? role.roleName : ''}</Tag>}
+            )}
         </span>
       ),
     }, {
@@ -82,12 +91,14 @@ class Member extends Component {
         <span>
           <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
           <Divider type="vertical" />
-          <a href="javascript:" onClick={() => this.onDelete(record)}>删除</a>
+          <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.onDelete(record)} okText="确定" cancelText="取消">
+            <a href="javascript:">删除</a>
+          </Popconfirm>
         </span>
       ),
-    }]
+    }] : []
     return (
-      <div>
+      roleDate && <div>
         <div className="memberTitleSection">
           <div className="memberTitle">用户管理</div>
           <Button type="primary" onClick={this.showModal}>
@@ -102,6 +113,7 @@ class Member extends Component {
           confirmLoading={confirmLoading}
           onCancel={this.handleCancel}
           value={value}
+          roles={roleDate}
         />
       </div>
     )

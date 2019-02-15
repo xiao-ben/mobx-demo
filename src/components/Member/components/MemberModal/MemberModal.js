@@ -1,7 +1,6 @@
 
 import React, { Component } from 'react'
 import { Modal, Form, Input, Select } from 'antd'
-import { path } from '../../../../config'
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -11,7 +10,10 @@ class MemberModal extends Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                this.props.onOk(values)
+                this.props.onOk({
+                    ...values,
+                    userId: this.props.value.key
+                })
             }
         });
     }
@@ -21,8 +23,7 @@ class MemberModal extends Component {
     }
 
     render() {
-        const { title, visible, confirmLoading, onCancel, value: initialValue } = this.props
-        console.log('porpsvalue')
+        const { title, visible, confirmLoading, onCancel, value: initialValue, roles } = this.props
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -54,28 +55,41 @@ class MemberModal extends Component {
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
+                    <FormItem {...formItemLayout} label="登录身份">
+                        {getFieldDecorator('identify', {
+                            rules: [{ required: true, message: '输入不能为空' }],
+                            initialValue:  initialValue && initialValue.identify ? initialValue.identify : ''
+                        })(
+                            <Select
+                                placeholder="请选择"                                
+                            >
+                                <Option key={1}>管理员</Option>
+                                <Option key={0}>普通用户</Option>   
+                            </Select>
+                        )}
+                    </FormItem>
                     <FormItem {...formItemLayout} label="角色">
                         {getFieldDecorator('manager', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? [...initialValue.manager || []] : []
+                            initialValue:  initialValue && initialValue.manager ? initialValue.manager.map(item => item.id.toString()) || [] : []
                         })(
                             <Select
                                 mode="multiple"
                                 placeholder="请选择"                                
                             >
                                 {
-                                    path.map(item => <Option key={item.value}>{item.name}</Option>)
+                                    roles.map(item => <Option key={item.key}>{item.roleName}</Option>)
                                 }
                             </Select>
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="密码">
-                    {getFieldDecorator('password', {
-                        rules: [{ required: true, message: '请输入密码' }],
-                    })(
-                        <Input type="password" placeholder="密码" />
-                    )}
-                </FormItem>
+                        {getFieldDecorator('password', {
+                            rules: [{ required: title === "添加用户", message: '请输入密码' }],
+                        })(
+                            <Input type="password" placeholder="密码" />
+                        )}
+                    </FormItem>
                 </Form>
             </Modal>
         )
