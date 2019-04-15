@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
-import { Tabs, Form, Icon, Input, Button, message } from 'antd'
+import { Form, Icon, Input, Button, message } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
 import Cookies from 'js-cookie'
 import './Login.css'
-const TabPane = Tabs.TabPane
 const FormItem = Form.Item;
 
 @inject('store') @observer
@@ -79,14 +78,7 @@ class Login extends Component {
                 <canvas id="canvas"></canvas>
                 <div className="loginContent">
                     <div className="loginModal">
-                        <Tabs defaultActiveKey="1" onChange={this.handleTabChaneg}>
-                            <TabPane tab="普通用户" key="0">
-                                {this.renderLoginForm()}
-                            </TabPane>
-                            <TabPane tab="管理员" key="1">
-                                {this.renderLoginForm()}
-                            </TabPane>
-                        </Tabs>
+                        {this.renderLoginForm()}
                     </div>
                 </div>
             </div>

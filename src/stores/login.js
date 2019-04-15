@@ -6,11 +6,6 @@ class LoginStore {
 
     @observable userName = ''
     @observable password = ''
-    @observable key = 1
-
-    @action handleTabChange = key => {
-        this.key = key
-    }
 
     @action handleLogin = values => {
         this.userName = values.userName
@@ -20,13 +15,11 @@ class LoginStore {
             data: {
                 userName: values.userName,
                 password: md5(values.password),
-                manager: this.key
             }
         })
     }
 
-    @action.bound fn = index => {this.todos[index].count = this.todos[index].count + 1} 
-  }
+}
 const loginStore = new LoginStore();
 
 export {loginStore}

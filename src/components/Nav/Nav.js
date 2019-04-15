@@ -3,28 +3,17 @@ import { withRouter } from "react-router"
 import { inject, observer } from 'mobx-react'
 import { Icon, Popconfirm, message } from 'antd'
 import Cookies from 'js-cookie'
-import axios from '../../lib/http'
 import './TopNavBar.css'
 
-@inject('store') @observer @withRouter
+@inject('store') @withRouter @observer 
 class Nav extends Component {
     constructor(props) {
         super(props)
         this.store = props.store.navStore
-        this.state = {
-            name: ''
-        }
     }
 
-    componentDidMount() {
-        axios('/smart_site/account/get-login-name').then(
-            res => {
-                if (!res.data.data) return
-                this.setState({
-                    name: res.data.data.user_name
-                }) 
-            }
-        )
+    componentWillMount() {
+        this.store.getName()
     }
 
     confirm = () => {
@@ -40,7 +29,7 @@ class Nav extends Component {
                 <div className="topNavBar">
                     <div>智慧路灯</div>
                     <Popconfirm placement="bottom" title="退出登录" onConfirm={this.confirm} okText="是" cancelText="否">
-                        <div><Icon type="user" style={{ color: '#fff', fontSize: '30', marginRight: '10px' }} />{this.state.name || ''}</div>
+                        <div><Icon type="user" style={{ color: '#fff', fontSize: '30', marginRight: '10px' }} />{this.store.name || ''}</div>
                     </Popconfirm>
                 </div>
             </div>

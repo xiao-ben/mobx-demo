@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Cookies from 'js-cookie'
+import camelize from 'camelize'
 
 export const defaults = {
     method: 'GET',
@@ -17,5 +17,8 @@ export default (url, options = {}) => {
             ...options.header,
         }
     })
-    return axios(baseUrl + url, options)
+    return axios(baseUrl + url, options).then(
+        res => ({data: camelize(res.data)}),
+        err => err
+    )
 }

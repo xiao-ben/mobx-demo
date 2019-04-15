@@ -1,3 +1,4 @@
+/* eslint-disable no-script-url */
 import React, { Component } from 'react'
 import { Table, Divider, Tag, Button, Popconfirm, message} from 'antd'
 import MemberModal from './components/MemberModal'
@@ -11,8 +12,7 @@ class Member extends Component {
     this.store = props.store.memberStore
     this.state = {
       value: {},
-      visible: false,
-      confirmLoading: false,
+      visible: false
     }
   }
 
@@ -29,26 +29,24 @@ class Member extends Component {
     })
   }
 
-  handleOk = (value) => {
-    this.setState({
-      confirmLoading: true,
-    })
+  handleOk = (value, callback) => {
     if(this.state.title === "添加用户") {
-      this.store.addmember(value)
-    } else {
-      this.store.editMember(value)
-    }
-    setTimeout(() => {
-      this.setState({
-        visible: false,
-        confirmLoading: false,
+      this.store.addmember(value).then(() => {
+        this.closeModal()
+        callback()
       })
-    }, 1000)
+    } else {
+      this.store.editMember(value).then(() => {
+        this.closeModal()
+        callback()
+      })
+    }
   }
 
-  handleCancel = () => {
+  closeModal = () => {
     this.setState({
       visible: false,
+      value: {}
     })
   }
 
@@ -62,25 +60,25 @@ class Member extends Component {
 
   onDelete = value => {
     this.store.deletemember(value)
-    message.info('删除成功')
   }
 
   render() {
-    const { visible, confirmLoading, value, title } = this.state
-    const { roleDate } = this.store 
+    const { visible, value, title } = this.state
+    const { memberDate, loading, roleDate } = this.store 
+
     const columns = roleDate ? [{
       title: '用户名称',
-      dataIndex: 'memberName',
-      key: 'memberName',
+      dataIndex: 'userName',
+      key: 'userName',
     }, {
-      title: '身份',
-      key: 'manager',
-      dataIndex: 'manager',
+      title: '权限',
+      key: 'managers',
+      dataIndex: 'managers',
       render: manager => (
         <span>
-          {manager.map((tag, index) => {
-            const role = roleDate.find(item => item.key === tag.id.toString())
-            return <Tag color="blue" key={tag.index}>{role ? role.roleName : ''}</Tag>}
+          {manager.map(tag => {
+            const role = roleDate.find(item => item.id === tag.managerId.toString())
+            return <Tag color="blue" key={tag.id}>{role ? role.managerName : tag.id}</Tag>}
             )}
         </span>
       ),
@@ -105,13 +103,13 @@ class Member extends Component {
             添加用户
           </Button>
         </div>
-        <Table columns={columns} dataSource={[...this.store.memberDate]} />
+        <Table columns={columns} dataSource={memberDate} />
         <MemberModal 
           title={title}
           visible={visible}
           onOk={this.handleOk}
-          confirmLoading={confirmLoading}
-          onCancel={this.handleCancel}
+          confirmLoading={loading}
+          onCancel={this.closeModal}
           value={value}
           roles={roleDate}
         />

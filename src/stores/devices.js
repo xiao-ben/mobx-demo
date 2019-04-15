@@ -1,7 +1,11 @@
 import { observable, action } from 'mobx';
+import moment from 'moment'
 import axios from '../lib/http'
 
 class DevicesStore {
+    @observable lights = []
+    @observable environment = {}
+    @observable attribute = []
     @observable devicesDate = [
         {
             key: '1',
@@ -26,48 +30,109 @@ class DevicesStore {
         )
     }
 
-    @action getDevices = () => {
-        axios('/smart_site/devices/get-device-list').then(
+    @action getLights = () => {
+        return axios(`/smart_site/devices/get-device-list`, {
+            method: 'post',
+            data: {
+                manager_comment: 'streetLight',
+            }
+        }).then(
             res => {
                 if (!res.data.data) return
-                this.devicesDate = res.data.data.map(
-                    item => ({
-                        key: item.id,
-                        id: item.device_id,
-                        typeId: item.type_id,
-                        deviceName: item.type_name 
-                    })
-                )
+                this.lights = res.data.data
+                return res.data.data
             }
         )
     }
 
-    @action addDevices = devices => {
-        axios('/smart_site/devices/add-device', {
+    @action getEnvironmentData = (selectedIndex, unit) => {
+        if (!this.lights[selectedIndex]) return
+        axios('/smart_site/devices/get-monitor-data', {
             method: 'post',
             data: {
-                typeId: devices.typeName,
-                deviceId: devices.id,
+                device_name: this.lights[selectedIndex].deviceName,
+                unit: unit
             }
-        }).then(
-            this.getDevices
-        )
+        }).then(res => {
+            if (!res || !res.data || !res.data.data) return
+            const data = res.data.data
+            this.environment =  {
+                ...data,
+                legend: data.legend,
+                time: data.time.map(time => moment(time * 1000).format('HH:mm')),
+                data: data.data
+            } 
+        })
     }
 
-    @action editDevices = device => {
-        const index = this.devicesDate.findIndex(item => item.key === device.key)
-        this.devicesDate[index] = device
-    }
-
-    @action deleteDevices = device => {
-        axios('/smart_site/devices/delete-device', {
+    @action getAttribute = selectedIndex => {
+        if (!this.lights[selectedIndex]) return
+        axios('/smart_site/devices/get-attribute-list', {
             method: 'post',
             data: {
-                id: device.key
+                device_id: this.lights[selectedIndex].id
             }
         }).then(
-            this.getDevices
+            res => {
+                if (!res.data.data) return
+                this.attribute = res.data.data
+            }
         )
+    }
+
+    @action deleteDevice = selectedIndex => {
+        if (!this.lights[selectedIndex]) return
+        return axios('/smart_site/devices/delete-device', {
+            method: 'post',
+            data: {
+                device_id: this.lights[selectedIndex].id
+            }
+        })
+    }
+
+    @action addLight = (value, path) => {
+        return axios('/smart_site/devices/add-device', {
+            method: 'post',
+            data: {
+                ...value,
+                manager_comment: path
+            }
+        })
+    }
+
+    @action editLight = (value, path, selectedIndex) => {
+        if (!this.lights[selectedIndex]) return
+        return axios('/smart_site/devices/reset-device', {
+            method: 'post',
+            data: {
+                ...value,                    
+                device_id: this.lights[selectedIndex].id,
+                manager_comment: path
+            }
+        })
+    }
+
+    @action handleSliderChange = (value, light, attribute) => {
+        return axios('/smart_site/devices/reset-device-attribute', {
+            method: 'post',
+            data: {
+                attribute,
+                device_id: light.deviceId,
+                value: value
+            }
+        })
+    }
+
+    @action handleSwitchChange = (status, light, attribute) => {
+        return axios('/smart_site/devices/reset-device-attribute', {
+            method: 'post',
+            data: {
+                attribute,
+                device_id: light.deviceId,
+                status: status ? '1' : '0',
+                value: light.value
+            }
+        })
     }
 }
 const devicesStore = new DevicesStore();

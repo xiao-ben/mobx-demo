@@ -20,7 +20,6 @@ class DevicesModal extends Component {
 
     render() {
         const { title, visible, confirmLoading, onCancel, value: initialValue, types } = this.props
-        console.log(this.props.value, 'iniddd')
         const { getFieldDecorator } = this.props.form
         const formItemLayout = {
             labelCol: {
@@ -45,30 +44,30 @@ class DevicesModal extends Component {
             >
                 <Form onSubmit={this.onSubmit} className="login-form">
                     {title === "添加设备" && <FormItem {...formItemLayout} label="路灯 ID" >
-                        {getFieldDecorator('device_name', {
+                        {getFieldDecorator('deviceName', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? initialValue.device_name || '' : ''
+                            initialValue: initialValue ? initialValue.deviceName : ''
                         })(
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>}
                     <FormItem {...formItemLayout} label="环境监测 ID" >
-                        {getFieldDecorator('environment_id', {
-                            initialValue: initialValue ? initialValue.environment_id || '' : ''
+                        {getFieldDecorator('environmentId', {
+                            initialValue: initialValue ? initialValue.environmentId : ''
                         })(
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="路灯 ID" >
-                        {getFieldDecorator('light_id', {
-                            initialValue: initialValue ? initialValue.light_id || '' : ''
+                        {getFieldDecorator('lightId', {
+                            initialValue: initialValue ? initialValue.lightId : ''
                         })(
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
                     <FormItem {...formItemLayout} label="喷雾机 ID" >
-                        {getFieldDecorator('sprayer_id', {
-                            initialValue: initialValue ? initialValue.sprayer_id || '' : ''
+                        {getFieldDecorator('sprayerId', {
+                            initialValue: initialValue ? initialValue.sprayerId : ''
                         })(
                             <Input placeholder="请输入" />
                         )}

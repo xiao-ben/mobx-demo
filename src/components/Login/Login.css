@@ -18,6 +18,10 @@
     background-color: rgba(256, 256, 256, 0.8)
 }
 
+.loginModal {
+    width: 500px;
+}
+
 .loginModal .ant-tabs-bar{
     width: 350px;
     border-bottom: none;

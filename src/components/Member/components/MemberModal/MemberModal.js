@@ -12,8 +12,8 @@ class MemberModal extends Component {
             if (!err) {
                 this.props.onOk({
                     ...values,
-                    userId: this.props.value.key
-                })
+                    userId: this.props.value.id
+                }, this.props.form.resetFields)
             }
         });
     }
@@ -37,7 +37,7 @@ class MemberModal extends Component {
         }
 
         return (
-            visible && <Modal
+            <Modal
                 title={title}
                 visible={visible}
                 onOk={this.onSubmit}
@@ -48,37 +48,24 @@ class MemberModal extends Component {
             >
                 <Form onSubmit={this.onSubmit} className="login-form">
                     <FormItem {...formItemLayout} label="用户名称" >
-                        {getFieldDecorator('memberName', {
+                        {getFieldDecorator('userName', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue: initialValue ? initialValue.memberName || '' : ''
+                            initialValue: initialValue ? initialValue.userName : ''
                         })(
                             <Input placeholder="请输入" />
                         )}
                     </FormItem>
-                    <FormItem {...formItemLayout} label="登录身份">
-                        {getFieldDecorator('identify', {
+                    <FormItem {...formItemLayout} label="权限">
+                        {getFieldDecorator('managers', {
                             rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue:  initialValue && initialValue.identify ? initialValue.identify : ''
-                        })(
-                            <Select
-                                placeholder="请选择"                                
-                            >
-                                <Option key={1}>管理员</Option>
-                                <Option key={0}>普通用户</Option>   
-                            </Select>
-                        )}
-                    </FormItem>
-                    <FormItem {...formItemLayout} label="角色">
-                        {getFieldDecorator('manager', {
-                            rules: [{ required: true, message: '输入不能为空' }],
-                            initialValue:  initialValue && initialValue.manager ? initialValue.manager.map(item => item.id.toString()) || [] : []
+                            initialValue: initialValue.managers ? initialValue.managers.map(item => item.managerId) : []
                         })(
                             <Select
                                 mode="multiple"
                                 placeholder="请选择"                                
                             >
                                 {
-                                    roles.map(item => <Option key={item.key}>{item.roleName}</Option>)
+                                    roles.map(item => <Option key={item.id}>{item.managerName}</Option>)
                                 }
                             </Select>
                         )}
