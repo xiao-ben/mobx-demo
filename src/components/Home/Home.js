@@ -49,7 +49,7 @@ class Home extends Component {
         return (
             <div className="homeRoot">
                 <div className="navContent">
-                    <Menu
+                    {isAdmin !== 'first' && <Menu
                         className="menu"
                         defaultOpenKeys={['0']}
                         onClick={this.handleClick}
@@ -65,7 +65,7 @@ class Home extends Component {
                             })
                         }
                         </SubMenu>
-                    </Menu>
+                    </Menu>}
                     <div className="homeBody">
                         <Switch>
                             {isAdmin !== 'first' && managers[0] && <Route exact path="/home/" component={() => <Redirect to={`/home/${this.redirectTo()}`} />} />}

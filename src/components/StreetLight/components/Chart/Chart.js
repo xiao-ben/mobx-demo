@@ -5,29 +5,35 @@ import './Chart.js'
 class Chart extends React.Component {
   componentDidMount() { }
   render() {
-    const { environment } = this.props
+    const { environment: data, type, name} = this.props
+    const environment = data.data ? {
+      legend: data.legend,
+      time: data.data.filter(item => item).map(item => item.Time),
+      data: data.data.filter(item => item).map(item => item[type])
+    } : {
+      legend: [],
+      time: [],
+      data: []
+    }
     return (
       <div>
         <ReactEcharts
           option={{
-            title: {
-              text: environment.device_id
-            },
             tooltip: {
               trigger: 'axis',
-              formatter: function (params) {
-                let result = ''
-                params.map((item, index) => ({
-                  ...item,
-                  index: index
-                })).sort((a, b) => b.value - a.value).forEach(function (col) {
-                  result += col.marker + " " + col.seriesName + " : " + col.value + environment.unit[col.index] + "</br>";
-                });
-                return result;
-              }
+              // formatter: function (params) {
+              //   let result = ''
+              //   params.map((item, index) => ({
+              //     ...item,
+              //     index: index
+              //   })).sort((a, b) => b.value - a.value).forEach(function (col) {
+              //     result += col.marker + " " + col.seriesName + " : " + col.value + environment.unit[col.index] + "</br>";
+              //   });
+              //   return result;
+              // }
             },
             legend: {
-              data: environment.legend
+              data: [...environment.legend || []]
             },
             grid: {
               left: '3%',
@@ -38,17 +44,17 @@ class Chart extends React.Component {
             xAxis: {
               type: 'category',
               boundaryGap: false,
-              data: environment.time
+              data: [...environment.time || []]
             },
             yAxis: {
               type: 'value'
             },
-            series: (environment.data || []).map((data, index) => ({
-              name: environment.legend[index],
+            series: [{
+              name: name || '',
               type: 'line',
               stack: '总量',
-              data: data
-            }))
+              data: [...environment.data || []]
+            }]
           }}
           notMerge={true}
           lazyUpdate={true}

@@ -1,18 +1,12 @@
 import { observable, action } from 'mobx';
-import moment from 'moment'
 import axios from '../lib/http'
 
 class DevicesStore {
     @observable lights = []
     @observable environment = {}
     @observable attribute = []
-    @observable devicesDate = [
-        {
-            key: '1',
-            id: '123',
-            deviceName: 'streetLight',
-        }
-    ]
+    @observable devicesDate = []
+    @observable realTimeData = {}
 
     @observable deviceTypes = null
 
@@ -56,12 +50,7 @@ class DevicesStore {
         }).then(res => {
             if (!res || !res.data || !res.data.data) return
             const data = res.data.data
-            this.environment =  {
-                ...data,
-                legend: data.legend,
-                time: data.time.map(time => moment(time * 1000).format('HH:mm')),
-                data: data.data
-            } 
+            this.environment = data
         })
     }
 
@@ -76,6 +65,21 @@ class DevicesStore {
             res => {
                 if (!res.data.data) return
                 this.attribute = res.data.data
+            }
+        )
+    }
+
+    @action getRealTimeData = selectedIndex => {
+        if (!this.lights[selectedIndex]) return
+        axios('/smart_site/devices/get-real-time-data', {
+            method: 'post',
+            data: {
+                device_name: this.lights[selectedIndex].deviceName
+            }
+        }).then(
+            res => {
+                if (!res.data.data) return
+                this.realTimeData = res.data.data
             }
         )
     }
@@ -123,14 +127,12 @@ class DevicesStore {
         })
     }
 
-    @action handleSwitchChange = (status, light, attribute) => {
+    @action handleSwitchChange = (light, attribute) => {
         return axios('/smart_site/devices/reset-device-attribute', {
             method: 'post',
             data: {
                 attribute,
                 device_id: light.deviceId,
-                status: status ? '1' : '0',
-                value: light.value
             }
         })
     }

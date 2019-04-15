@@ -19,6 +19,33 @@
     justify-items: flex-start;
 }
 
+.realTimeData {
+    width: 100%;
+    display: flex;
+}
+
+.realE {
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.typeRadio {
+    display: flex;
+    margin: 20px 0 0 40px;
+}
+
+.inputUnit {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+}
+
+.numberInput {
+    margin: 0 10px !important;
+    width: 200px !important;
+}
+
 .device {
     line-height: 25px;
     padding: 5px 10px;

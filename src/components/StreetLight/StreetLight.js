@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Slider, Button, Popconfirm, Radio, message } from 'antd'
+import { Button, Popconfirm, Radio, message, Input} from 'antd'
 import lightOpen from '../../images/light_open.svg'
 import open from '../../images/open.svg'
 import close from '../../images/close.svg'
@@ -12,6 +12,21 @@ import Chart from './components/Chart'
 import Map from '../../Map'
 import './StreetLight.css'
 
+const realTimeDataMap = [
+    { name: 'PM2.5', value: 'PM25' },
+    { name: 'PM10', value: 'PM10' },
+    { name: '噪音', value: 'ns' },
+    { name: '温度', value: 'tep' },
+    { name: '湿度', value: 'hum' },
+    { name: '光照', value: 'ill' },
+    { name: '气压', value: 'pre' },
+    // {name: '经度', value: 'Log'},
+    // {name: '纬度', value: 'Lat'},
+    // {name: '海拔', value: 'Alt'},
+    // {name: '路灯状态', value: 'LIT'},
+    // {name: '喷雾机状态', value: 'SPY'},
+]
+
 @inject('store') @observer
 class StreetLight extends Component {
     constructor(props) {
@@ -20,12 +35,13 @@ class StreetLight extends Component {
         this.state = {
             lights: [],
             lightStatusLoading: false,
-            unit: '5',
+            unit: '1',
             showType: 'attribute',
             visible: false,
             type: '',
-            isAdmin: props.store.navStore.isAdmin === true,
+            isAdmin: props.store.navStore.isAdmin,
             selectedIndex: 0,
+            realDateType: 'PM25' 
         }
     }
 
@@ -42,6 +58,7 @@ class StreetLight extends Component {
         const { selectedIndex, unit } = this.state
         this.store.getLights().then(() => {
             this.store.getEnvironmentData(selectedIndex, unit)
+            this.store.getRealTimeData(selectedIndex)
             this.store.getAttribute(selectedIndex)
         })
     }
@@ -61,8 +78,8 @@ class StreetLight extends Component {
         )
     }
 
-    handleSwitchChange = (status, light, attribute) => {
-        this.store.handleSwitchChange(status, light, attribute).then(
+    handleSwitchChange = (light, attribute) => {
+        this.store.handleSwitchChange(light, attribute).then(
             this.getLights()
         )
     }
@@ -72,6 +89,7 @@ class StreetLight extends Component {
             selectedIndex: index
         })
         this.store.getEnvironmentData(index, this.state.unit)
+        this.store.getRealTimeData(index)
         this.store.getAttribute(index)
     }
 
@@ -128,7 +146,7 @@ class StreetLight extends Component {
     onUnitValueChange = e => {
         this.setState({
             unit: e.target.value
-        }, this.store.getEnvironmentData)
+        })
     }
 
     onClickShowType = (type, index) => {
@@ -138,14 +156,20 @@ class StreetLight extends Component {
         this.onClickDevice(index)
     }
 
+    onClickRadio = e => {
+        this.setState({
+            realDateType: e.target.value
+        })
+    }
+
     render() {
-        const { lights, environment, attribute } = this.store
-        const { visible, selectedIndex, lightStatusLoading, isAdmin, unit, type, showType } = this.state
+        const { lights, environment, attribute, realTimeData, getEnvironmentData } = this.store
+        const { visible, selectedIndex, realDateType, lightStatusLoading, isAdmin, unit, type, showType } = this.state
         const selectedDevice = lights[selectedIndex] || {}
         return <div className='lightRoot'>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <div className="lightTitle">智慧路灯</div>
-                {isAdmin && <div>
+                {isAdmin !== 'first' && isAdmin && <div>
                     <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.deleteDevice()} okText="确定" cancelText="取消">
                         <Button size="small" type="primary">删除</Button>
                     </Popconfirm>
@@ -168,34 +192,58 @@ class StreetLight extends Component {
                     }
                 </div>
                 {
-                    showType === 'attribute' ? attribute.length && selectedDevice && !isAdmin ?
+                    showType === 'attribute' ? attribute.length && selectedDevice && isAdmin === false || isAdmin === 'first' ?
                         <div className="lightSection">
-                            <h4>{selectedDevice.device_name}</h4>
                             <div>
-                                <Radio.Group onChange={this.onUnitValueChange} value={unit} buttonStyle="solid">
-                                    <Radio.Button value="5">5 分钟</Radio.Button>
-                                    <Radio.Button value="60">1 小时</Radio.Button>
-                                </Radio.Group>
-                            </div>
-                            <div className="environment">
-                                <Chart environment={environment} />
-                            </div>
-                            <div className="statusSection">
-                                <h3>路灯</h3>
-                                <div>
-                                    <img width='20' src={attribute[1].status === '1' ? lightOpen : lightClose} className="lightStatus" />
-                                    <Button loading={lightStatusLoading} size="small" disabled={attribute[1].status === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(true, attribute[1], 'light_id')}>开启</Button>
-                                    <Button loading={lightStatusLoading} size="small" disabled={attribute[1].status === '0'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(false, attribute[1], 'light_id')}>关闭</Button>
+                                <div className="realTimeData">
+                                    {realTimeDataMap.map(item => <div className="realE" key={item.value}>{item.name}: {realTimeData[item.value]}</div>)}
                                 </div>
-                                <div className="streetLightSlider">亮度<Slider className="lightSlider" onChange={value => this.handleSliderChange(value, attribute[1], 'light_id')} value={attribute[1].value} /></div>
-                            </div>
-                            <div>
-                                <h4>喷雾机</h4>
                                 <div>
-                                    <img width='20' src={attribute[2].status === '1' ? open : close} className="lightStatus" />
-                                    <Button size="small" disabled={attribute[2].status === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(true, attribute[2], 'sprayer_id')}>开启</Button>
-                                    <Button size="small" disabled={attribute[2].status === '0'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(false, attribute[2], 'sprayer_id')}>关闭</Button>
+                                    <h3>路灯</h3>
+                                    <img width='20' src={realTimeData.LIT === '1' ? lightOpen : lightClose} className="lightStatus" />
+                                    <Button
+                                        size="small"
+                                        disabled={realTimeData.LIT === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                    >
+                                        开启
+                                    </Button>
+                                    <Button size="small"
+                                        disabled={realTimeData.LIT !== '1'}
+                                        type="primary"
+                                        className="lightStatus"
+                                        onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                    >
+                                        关闭
+                                    </Button>
                                 </div>
+                                <div>
+                                    <h3>喷雾机</h3>
+                                    <img width='20' src={realTimeData.SPY === '1' ? open : close} className="lightStatus" />
+                                    <Button
+                                        size="small"
+                                        disabled={realTimeData.SPY === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
+                                    >
+                                        开启
+                                    </Button>
+                                    <Button size="small"
+                                        disabled={realTimeData.SPY !== '1'}
+                                        type="primary"
+                                        className="lightStatus"
+                                        onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
+                                    >
+                                        关闭
+                                    </Button>
+                                </div>
+                                <div className="typeRadio">
+                                    <Radio.Group value={realDateType} buttonStyle="solid" onChange={this.onClickRadio}>
+                                        {realTimeDataMap.map(item => <Radio.Button key={item.value}  value={item.value}>{item.name}</Radio.Button>)}
+                                    </Radio.Group>
+                                    <div className='inputUnit'>
+                                        <div>间隔： </div><Input type='number'className='numberInput' onChange={this.onUnitValueChange} value={unit}/>
+                                        <Button type="primary" onClick={() => getEnvironmentData(selectedIndex, unit)}>确定</Button>
+                                    </div>
+                                </div>
+                                <Chart environment={environment} type={realDateType} />
                             </div>
                         </div> : (<div>
                             {attribute && attribute.map(item => <div className="deviceIds">
@@ -203,7 +251,7 @@ class StreetLight extends Component {
                             </div>)}
                         </div>) :
                         <div className="attribute">
-                            <Map />
+                            <Map lng={realTimeData.Log} lat={realTimeData.Lat}/>
                         </div>
                 }
             </div>
