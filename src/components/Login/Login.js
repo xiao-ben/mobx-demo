@@ -78,6 +78,10 @@ class Login extends Component {
                 <canvas id="canvas"></canvas>
                 <div className="loginContent">
                     <div className="loginModal">
+                        <div className="logoImage">
+                            <img src={require("../../images/logo.jpg")} className="logo" />
+                            智慧城市
+                        </div>
                         {this.renderLoginForm()}
                     </div>
                 </div>

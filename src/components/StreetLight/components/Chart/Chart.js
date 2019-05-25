@@ -2,13 +2,30 @@ import React from 'react'
 import ReactEcharts from 'echarts-for-react';
 import './Chart.js'
 
+const realTimeDataMap = [
+  { name: 'PM2.5', value: 'PM25', unit: '' },
+  { name: 'PM10', value: 'PM10', unit: '' },
+  { name: '噪音', value: 'ns', unit: 'dB' },
+  { name: '温度', value: 'tep', unit: '℃' },
+  { name: '湿度', value: 'hum', unit: '%' },
+  { name: '光照', value: 'ill', unit: 'Lx' },
+  { name: '气压', value: 'pre', unit: 'hpa' },
+  // {name: '经度', value: 'Log'},
+  // {name: '纬度', value: 'Lat'},
+  // {name: '海拔', value: 'Alt'},
+  // {name: '路灯状态', value: 'LIT'},
+  // {name: '喷雾机状态', value: 'SPY'},
+]
+
 class Chart extends React.Component {
   componentDidMount() { }
   render() {
     const { environment: data, type, name} = this.props
+    const xName = realTimeDataMap.find(item => item.value === type) || {}
+    console.log(type, xName.name, 'type')
     const environment = data.data ? {
       legend: data.legend,
-      time: data.data.filter(item => item).map(item => item.Time),
+      time: data.data.filter(item => item).map(item => item.Time ? item.Time.slice(0, 5) : 'noTime'),
       data: data.data.filter(item => item).map(item => item[type])
     } : {
       legend: [],
@@ -43,14 +60,16 @@ class Chart extends React.Component {
             },
             xAxis: {
               type: 'category',
+              name: '时间',
               boundaryGap: false,
               data: [...environment.time || []]
             },
             yAxis: {
+              name: xName.unit ? xName.name + `(${xName.unit})` : xName.name,
               type: 'value'
             },
             series: [{
-              name: name || '',
+              name: xName.name || '',
               type: 'line',
               stack: '总量',
               data: [...environment.data || []]

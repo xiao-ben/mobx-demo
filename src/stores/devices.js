@@ -78,7 +78,7 @@ class DevicesStore {
             }
         }).then(
             res => {
-                if (!res.data.data) return
+                if (!res || !res.data || !res.data.data) return
                 this.realTimeData = res.data.data
             }
         )
@@ -136,6 +136,18 @@ class DevicesStore {
             }
         })
     }
+
+    @action changeLightContarl = (light, type) => {
+        return axios('/smart_site/devices/reset-device-control', {
+            method: 'post',
+            data: {
+                ...light,
+                type
+            }
+        })
+    }
+
+
 }
 const devicesStore = new DevicesStore();
 

@@ -57,11 +57,11 @@ class Home extends Component {
                         mode="inline"
                         defaultSelectedKeys={[currentRoute]}
                     >   
-                        {isAdmin && <Menu.Item key='member'><Link to={`/home/member`}>用户管理</Link></Menu.Item>}
-                        <SubMenu key={0} title="设备管理">
+                        {isAdmin && <Menu.Item key='member'><Link style={{ fontSize: '25px' }} to={`/home/member`}>用户管理</Link></Menu.Item>}
+                        <SubMenu key={0} title={<div style={{ fontSize: '25px' }}>设备管理</div>}>
                         {
                             managers.map(item => {
-                                return <Menu.Item key={item.comment}><Link to={`/home/${item.comment}`}>{item.managerName}</Link></Menu.Item>
+                                return <Menu.Item style={{ fontSize: '25px' }} key={item.comment}><Link to={`/home/${item.comment}`}>{item.managerName}</Link></Menu.Item>
                             })
                         }
                         </SubMenu>

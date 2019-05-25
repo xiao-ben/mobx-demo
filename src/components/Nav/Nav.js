@@ -27,7 +27,7 @@ class Nav extends Component {
         return (
             <div className="navWrap">
                 <div className="topNavBar">
-                    <div>智慧路灯</div>
+                    <div><img src={require("../../images/logo.jpg")} className="logo" />智慧路灯</div>
                     <Popconfirm placement="bottom" title="退出登录" onConfirm={this.confirm} okText="是" cancelText="否">
                         <div><Icon type="user" style={{ color: '#fff', fontSize: '30', marginRight: '10px' }} />{this.store.name || ''}</div>
                     </Popconfirm>

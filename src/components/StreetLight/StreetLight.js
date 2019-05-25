@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Popconfirm, Radio, message, Input} from 'antd'
+import { Button, Popconfirm, Radio, message, Input, TimePicker, Checkbox, InputNumber  } from 'antd'
+import moment from 'moment'
 import lightOpen from '../../images/light_open.svg'
 import open from '../../images/open.svg'
 import close from '../../images/close.svg'
 import map from '../../images/map.svg'
+import wifi from '../../images/wifi.svg'
+import wifiClose from '../../images/wifiClose.svg'
 import attributeIcon from '../../images/attribute.svg'
 import lightClose from '../../images/light_close.svg'
 import { inject, observer } from 'mobx-react'
@@ -13,19 +16,21 @@ import Map from '../../Map'
 import './StreetLight.css'
 
 const realTimeDataMap = [
-    { name: 'PM2.5', value: 'PM25' },
-    { name: 'PM10', value: 'PM10' },
-    { name: '噪音', value: 'ns' },
-    { name: '温度', value: 'tep' },
-    { name: '湿度', value: 'hum' },
-    { name: '光照', value: 'ill' },
-    { name: '气压', value: 'pre' },
+    { name: 'PM2.5', value: 'PM25', unit: '' },
+    { name: 'PM10', value: 'PM10', unit: '' },
+    { name: '噪音', value: 'ns', unit: 'dB' },
+    { name: '温度', value: 'tep', unit: '℃' },
+    { name: '湿度', value: 'hum', unit: '%' },
+    { name: '光照', value: 'ill', unit: 'Lx' },
+    { name: '气压', value: 'pre', unit: 'hpa' },
     // {name: '经度', value: 'Log'},
     // {name: '纬度', value: 'Lat'},
     // {name: '海拔', value: 'Alt'},
     // {name: '路灯状态', value: 'LIT'},
     // {name: '喷雾机状态', value: 'SPY'},
 ]
+
+const RadioGroup = Radio.Group;
 
 @inject('store') @observer
 class StreetLight extends Component {
@@ -35,13 +40,15 @@ class StreetLight extends Component {
         this.state = {
             lights: [],
             lightStatusLoading: false,
-            unit: '1',
+            unit: '2',
             showType: 'attribute',
             visible: false,
             type: '',
             isAdmin: props.store.navStore.isAdmin,
             selectedIndex: 0,
-            realDateType: 'PM25' 
+            realDateType: 'PM25',
+            lightType: 1, 
+            mapType: 'single'
         }
     }
 
@@ -151,9 +158,12 @@ class StreetLight extends Component {
 
     onClickShowType = (type, index) => {
         this.setState({
-            showType: type
+            showType: type,
+            mapType: index === 0 || index ? 'single' : 'all'
         })
-        this.onClickDevice(index)
+        if(index === 0 || index) {
+            this.onClickDevice(index)
+        }
     }
 
     onClickRadio = e => {
@@ -162,19 +172,64 @@ class StreetLight extends Component {
         })
     }
 
+    onlightTypeChange = e => {
+        this.setState({
+            lightType: e.target.value
+        })
+    }
+
+    onTimeChange = (value, type) => {
+        this.setState({
+            [type]: value.format('HH:mm:ss')
+        })
+    }
+
+    onSameDayChange = e => {
+        console.log(e.target.value, 'value')
+        this.setState({
+            sameDay: e.target.checked
+        })
+    }
+
+    onAtTimeClick = light => {
+        const {sameDay, closeTime, openTime} = this.state
+        this.store.changeLightContarl({
+            deviceId: light.deviceId,
+            sameDay,
+            closeTime,
+            openTime
+        }, 2).then(() => {
+            message.success('设置成功')
+        })
+    }
+
+    onIllClick = light => {
+        const {ill} = this.state
+        this.store.changeLightContarl({
+            deviceId: light.deviceId,
+            ill
+        }, 3).then(() => {
+            message.success('设置成功')
+        })
+    }
+
     render() {
         const { lights, environment, attribute, realTimeData, getEnvironmentData } = this.store
-        const { visible, selectedIndex, realDateType, lightStatusLoading, isAdmin, unit, type, showType } = this.state
+        const { visible, selectedIndex, realDateType, lightStatusLoading, isAdmin, unit, type, showType, lightType, mapType } = this.state
+
         const selectedDevice = lights[selectedIndex] || {}
         return <div className='lightRoot'>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <div className="lightTitle">智慧路灯</div>
+                <div className="lightTitle">
+                    智慧路灯
+                    <img onClick={() => this.onClickShowType('map')} height={20} width={20} src={map} />
+                </div>
                 {isAdmin !== 'first' && isAdmin && <div>
                     <Popconfirm placement="bottom" title="确认删除" onConfirm={() => this.deleteDevice()} okText="确定" cancelText="取消">
-                        <Button size="small" type="primary">删除</Button>
+                        <Button  type="primary">删除</Button>
                     </Popconfirm>
-                    <Button onClick={this.editLight} className="addButton" size="small" type="primary">编辑</Button>
-                    <Button onClick={this.showModal} className="addButton" size="small" type="primary">添加</Button>
+                    <Button onClick={this.editLight} className="addButton"  type="primary">编辑</Button>
+                    <Button onClick={this.showModal} className="addButton"  type="primary">添加</Button>
                 </div>}
             </div>
             <div className="lightContent">
@@ -195,38 +250,64 @@ class StreetLight extends Component {
                     showType === 'attribute' ? attribute.length && selectedDevice && isAdmin === false || isAdmin === 'first' ?
                         <div className="lightSection">
                             <div>
-                                <div className="realTimeData">
-                                    {realTimeDataMap.map(item => <div className="realE" key={item.value}>{item.name}: {realTimeData[item.value]}</div>)}
+                                <div className='section'>
+                                    <h3 className="sectionTitle">实时环境监测</h3>
+                                    <div className="realTimeData">
+                                        {realTimeDataMap.map(item => <div className="realE" key={item.value}>{item.name}: {realTimeData[item.value]} {item.unit}</div>)}
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3>路灯</h3>
-                                    <img width='20' src={realTimeData.LIT === '1' ? lightOpen : lightClose} className="lightStatus" />
+                                <div className='section'>
+                                    <h3 className="sectionTitle">联网状态</h3>
+                                    <img width='20' src={realTimeData.NET === '1' ? wifi : wifiClose} className="lightStatus" />
+                                </div>
+                                <div className='section'>
+                                    <h3 className="sectionTitle">路灯控制 <img width='20' src={realTimeData.LIT === 1 ? lightOpen : lightClose} className="lightStatus" /></h3>
+                                    <RadioGroup onChange={this.onlightTypeChange} value={lightType}>
+                                        <div className='lightType'>
+                                        <Radio value={1}>
+                                            远程手动控制：
+                                            <Button
+                                                disabled={lightType !== 1 || realTimeData.LIT === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                            >
+                                                开启
+                                            </Button>
+                                            <Button 
+                                                disabled={lightType !== 1 || realTimeData.LIT !== 1}
+                                                type="primary"
+                                                className="lightStatus"
+                                                onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                            >
+                                                关闭
+                                            </Button>
+                                        </Radio>
+                                        </div>
+                                        <div className='lightType'>
+                                            <Radio value={2}>
+                                               定时控制：
+                                               开：<TimePicker onChange={value => this.onTimeChange(value, 'openTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                               关：<TimePicker onChange={value => this.onTimeChange(value, 'closeTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
+                                               <Checkbox onChange={this.onSameDayChange} style={{marginLeft: 10}}>加一天</Checkbox>
+                                               <Button type="primary" disabled={lightType !== 2} style={{marginLeft: 10}} onClick={() => this.onAtTimeClick(attribute[1])}>确定</Button>
+                                            </Radio>
+                                        </div>
+                                        <div className='lightType'>
+                                            <Radio value={3}>
+                                               {'光照控制：光照 <='} <InputNumber style={{width: 100, marginRight: 10}} onChange={value => this.setState({ill: value})} />
+                                               <Button type="primary" disabled={lightType !== 3} onClick={() => this.onIllClick(attribute[1])}>确定</Button>
+                                            </Radio>
+                                        </div>
+                                    </RadioGroup>
+                                </div>
+                                <div className='section'>
+                                    <h3 className="sectionTitle">喷雾器控制</h3>
+                                    <img width='20' src={realTimeData.SPY === 1 ? open : close} className="lightStatus" />
                                     <Button
-                                        size="small"
-                                        disabled={realTimeData.LIT === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                        disabled={realTimeData.SPY === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
                                     >
                                         开启
                                     </Button>
-                                    <Button size="small"
-                                        disabled={realTimeData.LIT !== '1'}
-                                        type="primary"
-                                        className="lightStatus"
-                                        onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
-                                    >
-                                        关闭
-                                    </Button>
-                                </div>
-                                <div>
-                                    <h3>喷雾机</h3>
-                                    <img width='20' src={realTimeData.SPY === '1' ? open : close} className="lightStatus" />
-                                    <Button
-                                        size="small"
-                                        disabled={realTimeData.SPY === '1'} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
-                                    >
-                                        开启
-                                    </Button>
-                                    <Button size="small"
-                                        disabled={realTimeData.SPY !== '1'}
+                                    <Button 
+                                        disabled={realTimeData.SPY !== 1}
                                         type="primary"
                                         className="lightStatus"
                                         onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
@@ -234,16 +315,19 @@ class StreetLight extends Component {
                                         关闭
                                     </Button>
                                 </div>
-                                <div className="typeRadio">
-                                    <Radio.Group value={realDateType} buttonStyle="solid" onChange={this.onClickRadio}>
-                                        {realTimeDataMap.map(item => <Radio.Button key={item.value}  value={item.value}>{item.name}</Radio.Button>)}
-                                    </Radio.Group>
-                                    <div className='inputUnit'>
-                                        <div>间隔： </div><Input type='number'className='numberInput' onChange={this.onUnitValueChange} value={unit}/>
-                                        <Button type="primary" onClick={() => getEnvironmentData(selectedIndex, unit)}>确定</Button>
+                                <div className="section">
+                                    <h3 className="sectionTitle">环境监测历史曲线</h3>
+                                    <div className="typeRadio">
+                                        <Radio.Group value={realDateType} buttonStyle="solid" onChange={this.onClickRadio}>
+                                            {realTimeDataMap.map(item => <Radio.Button key={item.value}  value={item.value}>{item.name}</Radio.Button>)}
+                                        </Radio.Group>
+                                        <div className='inputUnit'>
+                                            <div>间隔： </div><Input type='number'className='numberInput' onChange={this.onUnitValueChange} value={unit}/>
+                                            <Button type="primary" onClick={() => getEnvironmentData(selectedIndex, unit)}>确定</Button>
+                                        </div>
                                     </div>
+                                    <Chart environment={environment} type={realDateType} />
                                 </div>
-                                <Chart environment={environment} type={realDateType} />
                             </div>
                         </div> : (<div>
                             {attribute && attribute.map(item => <div className="deviceIds">
@@ -251,7 +335,7 @@ class StreetLight extends Component {
                             </div>)}
                         </div>) :
                         <div className="attribute">
-                            <Map lng={realTimeData.Log} lat={realTimeData.Lat}/>
+                            <Map lng={realTimeData.Log} lat={realTimeData.Lat} lights={lights} mapType={mapType} />
                         </div>
                 }
             </div>

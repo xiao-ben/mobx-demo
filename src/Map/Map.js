@@ -19,22 +19,44 @@ class Map extends Component {
 
     var point = new BMap.Point(116.404,  39.915);
     this.map.centerAndZoom(point, 15);
+
+    this.renderMap()
   }
 
-  componentDidUpdate() {
-    let {lng, lat} = this.props
-    lng = Number(lng.substring(0, lng.length-2))
-    lat = Number(lat.substring(0, lat.length-2))
+  addMarker = (point, label) => {
+    var marker = new BMap.Marker(point)
+    this.map.addOverlay(marker)
+    marker.setLabel(label)
+  }
+
+  renderMap  = () => {
+    let {lng, lat, mapType, lights} = this.props
+    lng = lng ? Number(lng.substring(0, lng.length-2)) : 116.404
+    lat = lat ? Number(lat.substring(0, lat.length-2)) : 39.915
 
     const allOverlay = this.map.getOverlays()
     
     this.map.clearOverlays(allOverlay)
-  
     var point = new BMap.Point(lng || 116.404,  lat || 39.915);
-    this.map.centerAndZoom(point, 15);
-    var marker = new BMap.Marker(point);
-    this.map.addOverlay(marker);
 
+    if (mapType === 'all') {
+      for (var i = 0; i < lights.length; i ++) {
+        let {lng, lat, deviceName} = lights[i]
+        lng = lng ? Number(lng.substring(0, lng.length-2)) : 116.404
+        lat = lat ? Number(lat.substring(0, lat.length-2)) : 39.915
+        const point = new BMap.Point(lng + (lng === 116.404 ? Math.random() * 0.01 : 0), lat + (lat === 39.915 ? Math.random() * 0.01 : 0))
+        const label = new BMap.Label(deviceName,{offset:new BMap.Size(20,-10)})
+        this.addMarker(point, label)
+      }
+    } else {
+      this.addMarker(point)
+    }
+   
+    this.map.centerAndZoom(point, 15)
+  }
+
+  componentDidUpdate() {
+    this.renderMap()
   }
 
   render() {

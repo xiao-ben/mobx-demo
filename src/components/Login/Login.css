@@ -5,21 +5,27 @@
 #canvas {
     display: block;
     width: 100%;
+    /* background-image: url('../../images/city.png'); */
+    background-size: cover;
+    background-repeat: repeat;
 }
 
 .loginContent {
-    width: 350px;
+    width: 500px;
     position: absolute;
     top: calc(50% - 100px);
-    left: calc( 50% - 175px);
+    left: calc( 50% - 250px);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(256, 256, 256, 0.8)
+    background-color: rgba(256, 256, 256, 0.8);
+    border-radius: 10px;
 }
 
 .loginModal {
+    padding: 10px 20px;
     width: 500px;
+    text-align: center;
 }
 
 .loginModal .ant-tabs-bar{
@@ -29,6 +35,11 @@
     justify-content: center;
 }
 
+.loginModal input, .loginModal button{
+    font-size: 30px;
+    height: 50px;
+}
+
 .login-form-button {
     display: block;
     width: 100%;
@@ -36,4 +47,16 @@
 
 .password {
     margin-bottom: 0;
+}
+
+.logo {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.logoImage {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 20px;
 }
