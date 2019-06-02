@@ -96,7 +96,7 @@ class Member extends Component {
       ),
     }] : []
     return (
-      roleDate && <div>
+      roleDate && <div className='memberTable'>
         <div className="memberTitleSection">
           <div className="memberTitle">用户管理</div>
           <Button type="primary" onClick={this.showModal}>

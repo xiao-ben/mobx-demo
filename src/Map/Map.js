@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import BMap from 'BMap';
-import './Map.css';
+import React, { Component } from 'react'
+import BMap from 'BMap'
+import {message} from 'antd'
+import './Map.css'
 
 class Map extends Component {
   map = null
@@ -30,29 +31,38 @@ class Map extends Component {
   }
 
   renderMap  = () => {
+    let error = false
     let {lng, lat, mapType, lights} = this.props
-    lng = lng ? Number(lng.substring(0, lng.length-2)) : 116.404
-    lat = lat ? Number(lat.substring(0, lat.length-2)) : 39.915
+    lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
+    lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
 
     const allOverlay = this.map.getOverlays()
     
     this.map.clearOverlays(allOverlay)
-    var point = new BMap.Point(lng || 116.404,  lat || 39.915);
+    var point = new BMap.Point(lng,  lat);
 
     if (mapType === 'all') {
       for (var i = 0; i < lights.length; i ++) {
-        let {lng, lat, deviceName} = lights[i]
-        lng = lng ? Number(lng.substring(0, lng.length-2)) : 116.404
-        lat = lat ? Number(lat.substring(0, lat.length-2)) : 39.915
-        const point = new BMap.Point(lng + (lng === 116.404 ? Math.random() * 0.01 : 0), lat + (lat === 39.915 ? Math.random() * 0.01 : 0))
+        let {Log: lng, Lat: lat, deviceName} = lights[i]
+        lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
+        lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
+
+        const point = new BMap.Point(lng, lat)
         const label = new BMap.Label(deviceName,{offset:new BMap.Size(20,-10)})
         this.addMarker(point, label)
+
+        if (i === 0) {
+          this.map.centerAndZoom(point, 15)
+        }
+        if (lng === 0 && lat === 0 && error === false) {
+          message.error('存在错误坐标')
+        }
       }
     } else {
-      this.addMarker(point)
+      const label = new BMap.Label(`${lng}, ${lat}`,{offset:new BMap.Size(20,-10)})
+      this.addMarker(point, label) 
+      this.map.centerAndZoom(point, 15)
     }
-   
-    this.map.centerAndZoom(point, 15)
   }
 
   componentDidUpdate() {

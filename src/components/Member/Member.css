@@ -14,3 +14,7 @@
 .menu {
     border-right: none !important;
 }
+
+.memberTable table {
+    font-size: 25px;
+}

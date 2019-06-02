@@ -3,8 +3,8 @@ import ReactEcharts from 'echarts-for-react';
 import './Chart.js'
 
 const realTimeDataMap = [
-  { name: 'PM2.5', value: 'PM25', unit: '' },
-  { name: 'PM10', value: 'PM10', unit: '' },
+  { name: 'PM2.5', value: 'P25', unit: '' },
+  { name: 'PM10', value: 'P10', unit: '' },
   { name: '噪音', value: 'ns', unit: 'dB' },
   { name: '温度', value: 'tep', unit: '℃' },
   { name: '湿度', value: 'hum', unit: '%' },
@@ -22,10 +22,9 @@ class Chart extends React.Component {
   render() {
     const { environment: data, type, name} = this.props
     const xName = realTimeDataMap.find(item => item.value === type) || {}
-    console.log(type, xName.name, 'type')
     const environment = data.data ? {
       legend: data.legend,
-      time: data.data.filter(item => item).map(item => item.Time ? item.Time.slice(0, 5) : 'noTime'),
+      time: data.data.filter(item => item).map(item => item.Ti || item.Time ? item.Ti || item.Time : 'noTime'),
       data: data.data.filter(item => item).map(item => item[type])
     } : {
       legend: [],

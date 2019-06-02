@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Popconfirm, Radio, message, Input, TimePicker, Checkbox, InputNumber  } from 'antd'
+import { Button, Popconfirm, Radio, message, Input, TimePicker, Checkbox, InputNumber, Select} from 'antd'
 import moment from 'moment'
 import lightOpen from '../../images/light_open.svg'
 import open from '../../images/open.svg'
@@ -16,8 +16,8 @@ import Map from '../../Map'
 import './StreetLight.css'
 
 const realTimeDataMap = [
-    { name: 'PM2.5', value: 'PM25', unit: '' },
-    { name: 'PM10', value: 'PM10', unit: '' },
+    { name: 'PM2.5', value: 'P25', unit: '' },
+    { name: 'PM10', value: 'P10', unit: '' },
     { name: '噪音', value: 'ns', unit: 'dB' },
     { name: '温度', value: 'tep', unit: '℃' },
     { name: '湿度', value: 'hum', unit: '%' },
@@ -30,7 +30,8 @@ const realTimeDataMap = [
     // {name: '喷雾机状态', value: 'SPY'},
 ]
 
-const RadioGroup = Radio.Group;
+const RadioGroup = Radio.Group
+const { Option } = Select
 
 @inject('store') @observer
 class StreetLight extends Component {
@@ -40,13 +41,12 @@ class StreetLight extends Component {
         this.state = {
             lights: [],
             lightStatusLoading: false,
-            unit: '2',
+            unit: '1',
             showType: 'attribute',
             visible: false,
             type: '',
-            isAdmin: props.store.navStore.isAdmin,
             selectedIndex: 0,
-            realDateType: 'PM25',
+            realDateType: 'P25',
             lightType: 1, 
             mapType: 'single'
         }
@@ -54,11 +54,13 @@ class StreetLight extends Component {
 
     componentDidMount() {
         this.getLights()
-        this.dataInterval = setInterval(this.store.getEnvironmentData, 1000 * 60 * 10)
+        this.dataInterval = setInterval(() => {
+            this.store.getRealTimeData(this.state.selectedIndex)
+        }, 1000 * 30)
     }
 
     componentWillUnmount() {
-        clearInterval(this.dataInterval)
+        this.dataInterval && clearInterval(this.dataInterval)
     }
 
     getLights = () => {
@@ -166,9 +168,9 @@ class StreetLight extends Component {
         }
     }
 
-    onClickRadio = e => {
+    onSelectValueChange = value => {
         this.setState({
-            realDateType: e.target.value
+            realDateType: value
         })
     }
 
@@ -215,7 +217,8 @@ class StreetLight extends Component {
 
     render() {
         const { lights, environment, attribute, realTimeData, getEnvironmentData } = this.store
-        const { visible, selectedIndex, realDateType, lightStatusLoading, isAdmin, unit, type, showType, lightType, mapType } = this.state
+        const { isAdmin } = this.props.store.navStore
+        const { visible, selectedIndex, realDateType, lightStatusLoading, unit, type, showType, lightType, mapType } = this.state
 
         const selectedDevice = lights[selectedIndex] || {}
         return <div className='lightRoot'>
@@ -253,7 +256,11 @@ class StreetLight extends Component {
                                 <div className='section'>
                                     <h3 className="sectionTitle">实时环境监测</h3>
                                     <div className="realTimeData">
-                                        {realTimeDataMap.map(item => <div className="realE" key={item.value}>{item.name}: {realTimeData[item.value]} {item.unit}</div>)}
+                                        {realTimeDataMap.map(item => <div className="realE" key={item.value}>
+                                            <div>{item.name}</div> 
+                                            {realTimeData[item.value] ? <div>{realTimeData[item.value]} {item.unit}</div> : <div>无数据</div>}
+                                        </div>)
+                                        }
                                     </div>
                                 </div>
                                 <div className='section'>
@@ -262,9 +269,9 @@ class StreetLight extends Component {
                                 </div>
                                 <div className='section'>
                                     <h3 className="sectionTitle">路灯控制 <img width='20' src={realTimeData.LIT === 1 ? lightOpen : lightClose} className="lightStatus" /></h3>
-                                    <RadioGroup onChange={this.onlightTypeChange} value={lightType}>
+                                    { realTimeData['MD'] !== undefined && <RadioGroup onChange={this.onlightTypeChange} defaultValue={realTimeData['MD']} key={realTimeData['MD']}>
                                         <div className='lightType'>
-                                        <Radio value={1}>
+                                        <Radio value={0}>
                                             远程手动控制：
                                             <Button
                                                 disabled={lightType !== 1 || realTimeData.LIT === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
@@ -282,7 +289,7 @@ class StreetLight extends Component {
                                         </Radio>
                                         </div>
                                         <div className='lightType'>
-                                            <Radio value={2}>
+                                            <Radio value={1}>
                                                定时控制：
                                                开：<TimePicker onChange={value => this.onTimeChange(value, 'openTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                                                关：<TimePicker onChange={value => this.onTimeChange(value, 'closeTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
@@ -296,11 +303,10 @@ class StreetLight extends Component {
                                                <Button type="primary" disabled={lightType !== 3} onClick={() => this.onIllClick(attribute[1])}>确定</Button>
                                             </Radio>
                                         </div>
-                                    </RadioGroup>
+                                    </RadioGroup>}
                                 </div>
                                 <div className='section'>
-                                    <h3 className="sectionTitle">喷雾器控制</h3>
-                                    <img width='20' src={realTimeData.SPY === 1 ? open : close} className="lightStatus" />
+                                    <h3 className="sectionTitle">喷雾器控制<img width='20' style={{marginLeft: 10}} src={realTimeData.SPY === 1 ? open : close} className="lightStatus" /></h3>
                                     <Button
                                         disabled={realTimeData.SPY === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
                                     >
@@ -318,11 +324,11 @@ class StreetLight extends Component {
                                 <div className="section">
                                     <h3 className="sectionTitle">环境监测历史曲线</h3>
                                     <div className="typeRadio">
-                                        <Radio.Group value={realDateType} buttonStyle="solid" onChange={this.onClickRadio}>
-                                            {realTimeDataMap.map(item => <Radio.Button key={item.value}  value={item.value}>{item.name}</Radio.Button>)}
-                                        </Radio.Group>
+                                        <Select value={realDateType} style={{ width: 150 }} onChange={this.onSelectValueChange}>
+                                            {realTimeDataMap.map(item => <Option  key={item.value}  value={item.value}>{item.name}</Option>)}
+                                        </Select>
                                         <div className='inputUnit'>
-                                            <div>间隔： </div><Input type='number'className='numberInput' onChange={this.onUnitValueChange} value={unit}/>
+                                            <div>间隔： </div><Input type='number' style={{ width: 150 }} className='numberInput' onChange={this.onUnitValueChange} value={unit}/>
                                             <Button type="primary" onClick={() => getEnvironmentData(selectedIndex, unit)}>确定</Button>
                                         </div>
                                     </div>

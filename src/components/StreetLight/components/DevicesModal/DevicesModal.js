@@ -43,7 +43,7 @@ class DevicesModal extends Component {
                 cancelText="取消"
             >
                 <Form onSubmit={this.onSubmit} className="login-form">
-                    {title === "添加设备" && <FormItem {...formItemLayout} label="路灯 ID" >
+                    {<FormItem {...formItemLayout} label="设备名称" >
                         {getFieldDecorator('deviceName', {
                             rules: [{ required: true, message: '输入不能为空' }],
                             initialValue: initialValue ? initialValue.deviceName : ''
@@ -53,6 +53,7 @@ class DevicesModal extends Component {
                     </FormItem>}
                     <FormItem {...formItemLayout} label="环境监测 ID" >
                         {getFieldDecorator('environmentId', {
+                             rules: [{ required: true, message: '输入不能为空' }],
                             initialValue: initialValue ? initialValue.environmentId : ''
                         })(
                             <Input placeholder="请输入" />
@@ -60,6 +61,7 @@ class DevicesModal extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="路灯 ID" >
                         {getFieldDecorator('lightId', {
+                             rules: [{ required: true, message: '输入不能为空' }],
                             initialValue: initialValue ? initialValue.lightId : ''
                         })(
                             <Input placeholder="请输入" />
@@ -67,6 +69,7 @@ class DevicesModal extends Component {
                     </FormItem>
                     <FormItem {...formItemLayout} label="喷雾机 ID" >
                         {getFieldDecorator('sprayerId', {
+                             rules: [{ required: true, message: '输入不能为空' }],
                             initialValue: initialValue ? initialValue.sprayerId : ''
                         })(
                             <Input placeholder="请输入" />

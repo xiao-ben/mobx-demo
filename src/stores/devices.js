@@ -44,7 +44,7 @@ class DevicesStore {
         axios('/smart_site/devices/get-monitor-data', {
             method: 'post',
             data: {
-                device_name: this.lights[selectedIndex].deviceName,
+                device_id: this.lights[selectedIndex].id,
                 unit: unit
             }
         }).then(res => {
@@ -74,7 +74,7 @@ class DevicesStore {
         axios('/smart_site/devices/get-real-time-data', {
             method: 'post',
             data: {
-                device_name: this.lights[selectedIndex].deviceName
+                device_id: this.lights[selectedIndex].id
             }
         }).then(
             res => {
