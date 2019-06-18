@@ -26,7 +26,7 @@ const realTimeDataMap = [
     // {name: '经度', value: 'Log'},
     // {name: '纬度', value: 'Lat'},
     // {name: '海拔', value: 'Alt'},
-    // {name: '路灯状态', value: 'LIT'},
+    // {name: '路灯状态', value: 'LP'},
     // {name: '喷雾机状态', value: 'SPY'},
 ]
 
@@ -47,7 +47,7 @@ class StreetLight extends Component {
             type: '',
             selectedIndex: 0,
             realDateType: 'P25',
-            lightType: 1, 
+            lightType: 0, 
             mapType: 'single'
         }
     }
@@ -56,7 +56,7 @@ class StreetLight extends Component {
         this.getLights()
         this.dataInterval = setInterval(() => {
             this.store.getRealTimeData(this.state.selectedIndex)
-        }, 1000 * 30)
+        }, 1000 * 10)
     }
 
     componentWillUnmount() {
@@ -67,7 +67,12 @@ class StreetLight extends Component {
         const { selectedIndex, unit } = this.state
         this.store.getLights().then(() => {
             this.store.getEnvironmentData(selectedIndex, unit)
-            this.store.getRealTimeData(selectedIndex)
+            this.store.getRealTimeData(selectedIndex).then(
+                res => {
+                    this.setState({
+                    lightType: res.MD
+                })}
+            )
             this.store.getAttribute(selectedIndex)
         })
     }
@@ -268,18 +273,18 @@ class StreetLight extends Component {
                                     <img width='20' src={realTimeData.NET === '1' ? wifi : wifiClose} className="lightStatus" />
                                 </div>
                                 <div className='section'>
-                                    <h3 className="sectionTitle">路灯控制 <img width='20' src={realTimeData.LIT === 1 ? lightOpen : lightClose} className="lightStatus" /></h3>
+                                    <h3 className="sectionTitle">路灯控制 <img width='20' src={realTimeData.LP === 1 ? lightOpen : lightClose} className="lightStatus" /></h3>
                                     { realTimeData['MD'] !== undefined && <RadioGroup onChange={this.onlightTypeChange} defaultValue={realTimeData['MD']} key={realTimeData['MD']}>
                                         <div className='lightType'>
                                         <Radio value={0}>
                                             远程手动控制：
                                             <Button
-                                                disabled={lightType !== 1 || realTimeData.LIT === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
+                                                disabled={lightType !== 0 || realTimeData.LP === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
                                             >
                                                 开启
                                             </Button>
                                             <Button 
-                                                disabled={lightType !== 1 || realTimeData.LIT !== 1}
+                                                disabled={lightType !== 0 || realTimeData.LP !== 1}
                                                 type="primary"
                                                 className="lightStatus"
                                                 onClick={() => this.handleSwitchChange(attribute[1], 'light_id')}
@@ -294,7 +299,7 @@ class StreetLight extends Component {
                                                开：<TimePicker onChange={value => this.onTimeChange(value, 'openTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                                                关：<TimePicker onChange={value => this.onTimeChange(value, 'closeTime')} defaultOpenValue={moment('00:00:00', 'HH:mm:ss')} />
                                                <Checkbox onChange={this.onSameDayChange} style={{marginLeft: 10}}>加一天</Checkbox>
-                                               <Button type="primary" disabled={lightType !== 2} style={{marginLeft: 10}} onClick={() => this.onAtTimeClick(attribute[1])}>确定</Button>
+                                               <Button type="primary" disabled={lightType !== 1} style={{marginLeft: 10}} onClick={() => this.onAtTimeClick(attribute[1])}>确定</Button>
                                             </Radio>
                                         </div>
                                         <div className='lightType'>
@@ -341,7 +346,7 @@ class StreetLight extends Component {
                             </div>)}
                         </div>) :
                         <div className="attribute">
-                            <Map lng={realTimeData.Log} lat={realTimeData.Lat} lights={lights} mapType={mapType} />
+                            <Map lng={realTimeData.Log} lat={realTimeData.Lat} lights={lights} mapType={mapType} name={lights[selectedIndex].deviceName} />
                         </div>
                 }
             </div>

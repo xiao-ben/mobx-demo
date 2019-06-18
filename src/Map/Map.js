@@ -32,7 +32,7 @@ class Map extends Component {
 
   renderMap  = () => {
     let error = false
-    let {lng, lat, mapType, lights} = this.props
+    let {lng, lat, mapType, lights, name} = this.props
     lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
     lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
 
@@ -59,7 +59,7 @@ class Map extends Component {
         }
       }
     } else {
-      const label = new BMap.Label(`${lng}, ${lat}`,{offset:new BMap.Size(20,-10)})
+      const label = new BMap.Label(name, {offset:new BMap.Size(20,-10)})
       this.addMarker(point, label) 
       this.map.centerAndZoom(point, 15)
     }

@@ -71,7 +71,7 @@ class DevicesStore {
 
     @action getRealTimeData = selectedIndex => {
         if (!this.lights[selectedIndex]) return
-        axios('/smart_site/devices/get-real-time-data', {
+        return axios('/smart_site/devices/get-real-time-data', {
             method: 'post',
             data: {
                 device_id: this.lights[selectedIndex].id
@@ -80,6 +80,7 @@ class DevicesStore {
             res => {
                 if (!res || !res.data || !res.data.data) return
                 this.realTimeData = res.data.data
+                return res.data.data
             }
         )
     }
