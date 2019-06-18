@@ -3,7 +3,7 @@ import axios from '../lib/http';
 
 class NavStore {
     @observable name = ''
-    @observable isAdmin = 'first'
+    @observable isAdmin = true
     @observable managers = [{
       managerName: '智慧路灯',
       comment: 'streetLight'
