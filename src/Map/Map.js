@@ -24,8 +24,9 @@ class Map extends Component {
     this.renderMap()
   }
 
-  addMarker = (point, label) => {
-    var marker = new BMap.Marker(point)
+  addMarker = ({points}, label) => {
+    console.log(points);
+    var marker = new BMap.Marker(points[0])
     this.map.addOverlay(marker)
     marker.setLabel(label)
   }
@@ -38,6 +39,7 @@ class Map extends Component {
 
     const allOverlay = this.map.getOverlays()
     
+    const convertor = new BMap.Convertor();
     this.map.clearOverlays(allOverlay)
     var point = new BMap.Point(lng,  lat);
 
@@ -49,7 +51,7 @@ class Map extends Component {
 
         const point = new BMap.Point(lng, lat)
         const label = new BMap.Label(deviceName,{offset:new BMap.Size(20,-10)})
-        this.addMarker(point, label)
+        convertor.translate([point], 1, 5, data => this.addMarker(data, label))
 
         if (i === 0) {
           this.map.centerAndZoom(point, 15)
@@ -60,7 +62,7 @@ class Map extends Component {
       }
     } else {
       const label = new BMap.Label(name, {offset:new BMap.Size(20,-10)})
-      this.addMarker(point, label) 
+      convertor.translate([point], 1, 5, data => this.addMarker(data, label))
       this.map.centerAndZoom(point, 15)
     }
   }
