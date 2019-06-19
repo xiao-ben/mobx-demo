@@ -38,8 +38,8 @@ class MemberStore {
             }
         }).then(
             res => {
+                this.loading = false
                 if (!res.data.data) {
-                    this.loading = false
                     message.error(`修改失败 ${res.data.data}`)
                     return
                 }
