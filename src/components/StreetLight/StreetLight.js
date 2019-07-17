@@ -67,12 +67,7 @@ class StreetLight extends Component {
         const { selectedIndex, unit } = this.state
         this.store.getLights().then(() => {
             this.store.getEnvironmentData(selectedIndex, unit)
-            this.store.getRealTimeData(selectedIndex).then(
-                res => {
-                    this.setState({
-                    lightType: res.MD
-                })}
-            )
+            this.store.getRealTimeData(selectedIndex)
             this.store.getAttribute(selectedIndex)
         })
     }
@@ -274,7 +269,7 @@ class StreetLight extends Component {
                                 </div>
                                 <div className='section'>
                                     <h3 className="sectionTitle">路灯控制 <img width='20' src={realTimeData.LP === 1 ? lightOpen : lightClose} className="lightStatus" /></h3>
-                                    { realTimeData['MD'] !== undefined && <RadioGroup onChange={this.onlightTypeChange} defaultValue={realTimeData['MD']} key={realTimeData['MD']}>
+                                    <RadioGroup onChange={this.onlightTypeChange} defaultValue={0}>
                                         <div className='lightType'>
                                         <Radio value={0}>
                                             远程手动控制：
@@ -308,7 +303,7 @@ class StreetLight extends Component {
                                                <Button type="primary" disabled={lightType !== 3} onClick={() => this.onIllClick(attribute[1])}>确定</Button>
                                             </Radio>
                                         </div>
-                                    </RadioGroup>}
+                                    </RadioGroup>
                                 </div>
                                 <div className='section'>
                                     <h3 className="sectionTitle">喷雾器控制<img width='20' style={{marginLeft: 10}} src={realTimeData.SPY === 1 ? open : close} className="lightStatus" /></h3>
