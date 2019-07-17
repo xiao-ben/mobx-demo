@@ -56,7 +56,7 @@ class StreetLight extends Component {
         this.getLights()
         this.dataInterval = setInterval(() => {
             this.store.getRealTimeData(this.state.selectedIndex)
-        }, 1000 * 10)
+        }, 1000 * 3)
     }
 
     componentWillUnmount() {
@@ -313,7 +313,7 @@ class StreetLight extends Component {
                                 <div className='section'>
                                     <h3 className="sectionTitle">喷雾器控制<img width='20' style={{marginLeft: 10}} src={realTimeData.SPY === 1 ? open : close} className="lightStatus" /></h3>
                                     <Button
-                                        disabled={realTimeData.SPY === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
+                                        disabled={realTimeData.SPY === 1} type="primary" className="lightStatus" onClick={() => this.handleSwitchChange(attribute[2], 'sprayer_id')}
                                     >
                                         开启
                                     </Button>
@@ -321,7 +321,7 @@ class StreetLight extends Component {
                                         disabled={realTimeData.SPY !== 1}
                                         type="primary"
                                         className="lightStatus"
-                                        onClick={() => this.handleSwitchChange(attribute[2], 'light_id')}
+                                        onClick={() => this.handleSwitchChange(attribute[2], 'sprayer_id')}
                                     >
                                         关闭
                                     </Button>
