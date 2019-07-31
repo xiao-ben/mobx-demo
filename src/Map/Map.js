@@ -5,6 +5,7 @@ import './Map.css'
 
 class Map extends Component {
   map = null
+  center = false
 
   componentDidMount() {
     this.map = new BMap.Map("mapContainer"); // 创建Map实例
@@ -20,20 +21,19 @@ class Map extends Component {
 
     var point = new BMap.Point(116.404,  39.915);
     this.map.centerAndZoom(point, 15);
-
+    this.map.enableScrollWheelZoom(true);
     this.renderMap()
   }
 
   addMarker = ({points}, label) => {
-    console.log(points);
     var marker = new BMap.Marker(points[0])
     this.map.addOverlay(marker)
     marker.setLabel(label)
   }
 
-  renderMap  = () => {
+  renderMap = (props = this.props) => {
     let error = false
-    let {lng, lat, mapType, lights, name} = this.props
+    let {lng, lat, mapType, lights, name} = props
     lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
     lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
 
@@ -52,10 +52,11 @@ class Map extends Component {
         const point = new BMap.Point(lng, lat)
         const label = new BMap.Label(deviceName,{offset:new BMap.Size(20,-10)})
         convertor.translate([point], 1, 5, data => this.addMarker(data, label))
-
+        
         if (i === 0) {
-          this.map.centerAndZoom(point, 15)
+          this.map.centerAndZoom(point, 13)
         }
+
         if (lng === 0 && lat === 0 && error === false) {
           message.error('存在错误坐标')
         }
@@ -63,12 +64,16 @@ class Map extends Component {
     } else {
       const label = new BMap.Label(name, {offset:new BMap.Size(20,-10)})
       convertor.translate([point], 1, 5, data => this.addMarker(data, label))
-      this.map.centerAndZoom(point, 15)
+      
+      this.map.panTo(point)
+
     }
   }
 
-  componentDidUpdate() {
-    this.renderMap()
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.mapType !== this.props.mapType || nextProps.name !== this.props.name) {
+      this.renderMap(nextProps)
+    }
   }
 
   render() {
