@@ -341,7 +341,7 @@ class StreetLight extends Component {
                             </div>)}
                         </div>) :
                         <div className="attribute">
-                            <Map lng={realTimeData.Log} lat={realTimeData.Lat} lights={lights} mapType={mapType} name={lights[selectedIndex].deviceName} />
+                            <Map lng={realTimeData.Log} lat={realTimeData.Lat} lights={lights} mapType={mapType} index={selectedIndex} />
                         </div>
                 }
             </div>

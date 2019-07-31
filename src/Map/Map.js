@@ -33,7 +33,8 @@ class Map extends Component {
 
   renderMap = (props = this.props) => {
     let error = false
-    let {lng, lat, mapType, lights, name} = props
+    const { index, mapType, lights } = props
+    let {Log: lng, Lat: lat, deviceName } = lights[index] || {}
     lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
     lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
 
@@ -62,16 +63,16 @@ class Map extends Component {
         }
       }
     } else {
-      const label = new BMap.Label(name, {offset:new BMap.Size(20,-10)})
+      const label = new BMap.Label(`${deviceName}`, {offset:new BMap.Size(20,-10)})
       convertor.translate([point], 1, 5, data => this.addMarker(data, label))
       
-      this.map.panTo(point)
+      this.map.centerAndZoom(point, 13)
 
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.mapType !== this.props.mapType || nextProps.name !== this.props.name) {
+    if (nextProps.mapType !== this.props.mapType || nextProps.index !== this.props.index) {
       this.renderMap(nextProps)
     }
   }
