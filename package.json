@@ -56,7 +56,9 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "concurrently \"npm run dev\" \"npm run proxy\"",
+    "dev": "node scripts/start.js",
+    "proxy": "node scripts/proxy.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"
   },
@@ -104,6 +106,10 @@
   },
   "devDependencies": {
     "babel-preset-react-native-stage-0": "^1.0.1",
-    "babel-preset-stage-2": "^6.24.1"
+    "babel-preset-stage-2": "^6.24.1",
+    "concurrently": "^4.1.1",
+    "http-proxy-middleware": "^0.19.1",
+    "koa": "^2.7.0",
+    "koa-connect": "^2.0.1"
   }
 }

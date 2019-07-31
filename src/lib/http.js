@@ -9,7 +9,7 @@ export const defaults = {
     headers: null,
 }
 
-const baseUrl = 'http://39.106.114.35'
+const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:5001' : 'http://39.106.114.35'
 export default (url, options = {}) => {
     options = Object.assign({}, defaults, options, {
         headers: {
