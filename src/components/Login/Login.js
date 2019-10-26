@@ -3,6 +3,7 @@ import { Form, Icon, Input, Button, message } from 'antd'
 import { inject, observer } from 'mobx-react'
 import { init, currentCircle } from '../../lib/canvas'
 import Cookies from 'js-cookie'
+import { cookie } from './cookie'
 import './Login.css'
 const FormItem = Form.Item;
 
@@ -29,7 +30,7 @@ class Login extends Component {
             if (!err) {
                 this.store.handleLogin(values).then(
                     res => {
-                        // Cookies.set('L_USM', 'cS1Sa0I4RDBWNVdFPVVEMUJ2MXNCbU9wQzdaM1MyUkZCbzEzRXVCa0I4RDBWNVdrPW4yeU5ySlZTMmlsPThvZlQ1eWRG')
+                        process.env.NODE_ENV === 'development' && Cookies.set('L_USM', cookie)
                         if (res.data.data.success) {
                             window.location.href = '/home'
                         } else {
