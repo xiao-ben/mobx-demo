@@ -1,6 +1,5 @@
-/* eslint-disable no-script-url */
 import React, { Component } from 'react'
-import { Table, Divider, Tag, Button, Popconfirm, message} from 'antd'
+import { Table, Divider, Tag, Button, Popconfirm } from 'antd'
 import MemberModal from './components/MemberModal'
 import { inject, observer } from 'mobx-react';
 import './Member.css'
@@ -64,9 +63,9 @@ class Member extends Component {
 
   render() {
     const { visible, value, title } = this.state
-    const { memberDate, loading, roleDate } = this.store 
+    const { memberDate, loading, roleData } = this.store 
 
-    const columns = roleDate ? [{
+    const columns = roleData ? [{
       title: '用户名称',
       dataIndex: 'userName',
       key: 'userName',
@@ -77,7 +76,7 @@ class Member extends Component {
       render: manager => (
         <span>
           {manager.map(tag => {
-            const role = roleDate.find(item => item.id === tag.managerId.toString())
+            const role = roleData.find(item => item.id === tag.managerId.toString())
             return <Tag color="blue" key={tag.id}>{role ? role.managerName : tag.id}</Tag>}
             )}
         </span>
@@ -85,7 +84,7 @@ class Member extends Component {
     }, {
       title: '操作',
       key: 'action',
-      render: (text, record) => (
+      render: (_, record) => (
         <span>
           <a href="javascript:" onClick={() => this.handleEdit(record)}>编辑</a>
           <Divider type="vertical" />
@@ -96,7 +95,7 @@ class Member extends Component {
       ),
     }] : []
     return (
-      roleDate && <div className='memberTable'>
+      roleData && <div className='memberTable'>
         <div className="memberTitleSection">
           <div className="memberTitle">用户管理</div>
           <Button type="primary" onClick={this.showModal}>
@@ -111,7 +110,7 @@ class Member extends Component {
           confirmLoading={loading}
           onCancel={this.closeModal}
           value={value}
-          roles={roleDate}
+          roles={roleData}
         />
       </div>
     )

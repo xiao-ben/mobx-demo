@@ -2,28 +2,15 @@ import { observable, action } from 'mobx';
 import axios from '../lib/http'
 
 class DevicesStore {
+    // 定义初始变量
     @observable lights = []
     @observable environment = {}
     @observable attribute = []
     @observable devicesDate = []
     @observable realTimeData = {}
-
     @observable deviceTypes = null
 
-    @action getDeviceTypes = () => {
-        axios('/smart_site/devices/get-type-list').then(
-            res => {
-                if (!res.data.data) return
-                this.deviceTypes = res.data.data.map(
-                    item => ({
-                        id: item.id,
-                        deviceName: item.type_name
-                    })
-                )
-            }
-        )
-    }
-
+    // 获取所有路灯
     @action getLights = () => {
         return axios(`/smart_site/devices/get-device-list`, {
             method: 'post',
@@ -39,6 +26,7 @@ class DevicesStore {
         )
     }
 
+    // 获取环境相关信息
     @action getEnvironmentData = (selectedIndex, unit) => {
         if (!this.lights[selectedIndex]) return
         axios('/smart_site/devices/get-monitor-data', {
@@ -54,6 +42,7 @@ class DevicesStore {
         })
     }
 
+    // 获得路灯的属性
     @action getAttribute = selectedIndex => {
         if (!this.lights[selectedIndex]) return
         axios('/smart_site/devices/get-attribute-list', {
@@ -69,6 +58,7 @@ class DevicesStore {
         )
     }
 
+    // 获取实时数据
     @action getRealTimeData = selectedIndex => {
         if (!this.lights[selectedIndex]) return
         return axios('/smart_site/devices/get-real-time-data', {
@@ -85,7 +75,8 @@ class DevicesStore {
         )
     }
 
-    @action deleteDevice = selectedIndex => {
+    // 删除路灯
+    @action deleteLight = selectedIndex => {
         if (!this.lights[selectedIndex]) return
         return axios('/smart_site/devices/delete-device', {
             method: 'post',
@@ -95,6 +86,7 @@ class DevicesStore {
         })
     }
 
+    // 添加路灯
     @action addLight = (value, path) => {
         return axios('/smart_site/devices/add-device', {
             method: 'post',
@@ -105,6 +97,7 @@ class DevicesStore {
         })
     }
 
+    // 编辑路灯
     @action editLight = (value, path, selectedIndex) => {
         if (!this.lights[selectedIndex]) return
         return axios('/smart_site/devices/reset-device', {
@@ -117,6 +110,7 @@ class DevicesStore {
         })
     }
 
+    // 调整亮度
     @action handleSliderChange = (value, light, attribute) => {
         return axios('/smart_site/devices/reset-device-attribute', {
             method: 'post',
@@ -128,6 +122,7 @@ class DevicesStore {
         })
     }
 
+    // 切换开关
     @action handleSwitchChange = (light, attribute) => {
         return axios('/smart_site/devices/reset-device-attribute', {
             method: 'post',
@@ -138,6 +133,7 @@ class DevicesStore {
         })
     }
 
+    // 切换开关模式
     @action changeLightContarl = (light, type) => {
         return axios('/smart_site/devices/reset-device-control', {
             method: 'post',

@@ -12,6 +12,7 @@
 }
 
 .menu {
+    width: 256px !important;
     font-weight: 600;
     border-right: 0;
 }
@@ -22,4 +23,8 @@
     min-height: calc(100vh - 90px);
     background-color: #fff;
     padding: 10px 20px;
+}
+
+.linkItem {
+    font-size: 25px;
 }

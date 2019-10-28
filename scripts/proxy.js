@@ -4,7 +4,7 @@ const proxy = require('http-proxy-middleware')
 
 const app = new Koa()
 
-const cookie = 'PHPSESSID=mf1v8bma8k1giur70cm3mq32g5; L_USM=d3hhYlp0WTdGPUlKMXFKN0tlM2hFeFZ4SEFIM1lxZUxGczQ2MTIwdDE3OXNScWFtQkRxMTNBenFTYk9IRnNJcjZCcHN6d0liWWFMR1ZCcHRFQldmWnQ9ako%253D'
+const cookie = 'L_USM=QVFrOHJTbTdrSnBiYTRKYVU9SkNTeDA3b1NzRllKb3NYUkc2VUFWPXJNY0hrS3M3VUJJWGgtWWdJTkk0a09HRFhPVi13NEoyVVNORGQtSjduTnQ5UFA0SDE%253D; PHPSESSID=e0870tcel0h8f6hna2l2ld6vi5'
 
 app.use(
   c2k(

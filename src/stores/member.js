@@ -5,14 +5,14 @@ import md5 from 'md5'
 
 class MemberStore {
     @observable memberDate = []
-    @observable roleDate = []
+    @observable roleData = []
     @observable loading = false
 
     @action getRole = () => {
         return axios('/smart_site/manager/get-manager-list').then(
             res => {
                 if (!res.data || !res.data.data) return
-                this.roleDate = res.data.data
+                this.roleData = res.data.data
             },
             err => {
                 return 

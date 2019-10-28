@@ -1,11 +1,9 @@
 
 import React from 'react'
-import registerServiceWorker from './registerServiceWorker'
 import { Provider } from 'mobx-react'
 import { render } from 'react-dom'
-import { BrowserRouter as Router } from 'react-router-dom'
 import * as stores from './stores/index'
-import App from './router'
+import App from './App'
 import 'antd/dist/antd.css';
 
 render(
@@ -15,6 +13,7 @@ render(
   document.getElementById('root')
 )
 
+// 启用热替换 hmr
 if (module.hot) {
   module.hot.accept(() => {
     render(
@@ -23,5 +22,3 @@ if (module.hot) {
       </Provider>, document.getElementById('root'));
   })
 }
-
-registerServiceWorker();

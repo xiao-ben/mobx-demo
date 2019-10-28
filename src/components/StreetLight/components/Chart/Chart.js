@@ -20,7 +20,7 @@ const realTimeDataMap = [
 class Chart extends React.Component {
   componentDidMount() { }
   render() {
-    const { environment: data, type, name} = this.props
+    const { environment: data, type } = this.props
     const xName = realTimeDataMap.find(item => item.value === type) || {}
     const environment = data.data ? {
       legend: data.legend,
@@ -36,17 +36,7 @@ class Chart extends React.Component {
         <ReactEcharts
           option={{
             tooltip: {
-              trigger: 'axis',
-              // formatter: function (params) {
-              //   let result = ''
-              //   params.map((item, index) => ({
-              //     ...item,
-              //     index: index
-              //   })).sort((a, b) => b.value - a.value).forEach(function (col) {
-              //     result += col.marker + " " + col.seriesName + " : " + col.value + environment.unit[col.index] + "</br>";
-              //   });
-              //   return result;
-              // }
+              trigger: 'axis'
             },
             legend: {
               data: [...environment.legend || []]

@@ -5,7 +5,6 @@
 #canvas {
     display: block;
     width: 100%;
-    /* background-image: url('../../images/city.png'); */
     background-size: cover;
     background-repeat: repeat;
 }
