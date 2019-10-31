@@ -21,7 +21,6 @@ class Map extends Component {
 
     var point = new BMap.Point(116.404,  39.915)
     this.map.centerAndZoom(point, 15)
-    this.map.enableScrollWheelZoom(true)
     this.renderMap()
   }
 
@@ -38,11 +37,13 @@ class Map extends Component {
     // 格式化坐标
     lng = lng ? Number(lng.substring(0, lng.length-2)) : 0
     lat = lat ? Number(lat.substring(0, lat.length-2)) : 0
+    var point = new BMap.Point(lng,  lat)
 
+    // 每次传入新的坐标时需要清楚之前的点
     const allOverlay = this.map.getOverlays()
     const convertor = new BMap.Convertor()
     this.map.clearOverlays(allOverlay)
-    var point = new BMap.Point(lng,  lat)
+   
 
     if (mapType === 'all') {
       for (var i = 0 ; i < lights.length ; i ++) {
